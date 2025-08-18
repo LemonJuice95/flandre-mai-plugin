@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.1.3-alpha
+ - 修正dx分星数的判定
+
 ## v0.1.2-alpha
  - 将jar内的字体文件移除，改为外部获取
 

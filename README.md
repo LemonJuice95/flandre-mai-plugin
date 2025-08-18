@@ -25,4 +25,4 @@
 ## License
 
 本项目基于 [Yuri-YuzuChaN/maimaiDX](https://github.com/Yuri-YuzuChaN/maimaiDX/) 移植，遵循原项目的 [MIT 许可证](LICENSE)。  
-您可自由使用、修改或分发本代码，但须保留原始版权声明与许可证文件。
+您可以自由使用、修改或分发本代码，但须保留原始版权声明与许可证文件。

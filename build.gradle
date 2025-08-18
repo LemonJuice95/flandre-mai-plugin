@@ -18,7 +18,7 @@ publishing {
         maven(MavenPublication) {
             groupId = 'io.lemonjuice'
             artifactId = 'flan-mai-plugin'
-            version = '0.1.0-alpha'
+            version = project.version;
 
             from components.java
         }

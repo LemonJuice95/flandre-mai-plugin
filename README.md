@@ -14,6 +14,8 @@
 1. 将压缩包中static目录下的mai目录放置在运行目录下的images目录中
 2. 将压缩包中static目录下的字体文件放置在运行目录下的fonts目录中
 
+### [Changelog](CHANGELOG.md)
+
 ## Credits
 
 感谢 [Yuri-YuzuChaN](https://github.com/Yuri-YuzuChaN) 提供的源码

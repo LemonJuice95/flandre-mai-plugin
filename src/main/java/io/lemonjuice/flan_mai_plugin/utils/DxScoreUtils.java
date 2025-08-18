@@ -1,4 +1,4 @@
-package io.lemonjuice.flan_mai_plugin.utils.enums;
+package io.lemonjuice.flan_mai_plugin.utils;
 
 public class DxScoreUtils {
     public static int getStarNum(int score, int totalScore) {

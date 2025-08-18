@@ -4,7 +4,7 @@ import io.lemonjuice.flan_mai_plugin.refence.ConfigRefs;
 import io.lemonjuice.flan_mai_plugin.refence.FileRefs;
 import io.lemonjuice.flan_mai_plugin.song.SongManager;
 import io.lemonjuice.flan_mai_plugin.utils.StringUtils;
-import io.lemonjuice.flan_mai_plugin.utils.enums.DxScoreUtils;
+import io.lemonjuice.flan_mai_plugin.utils.DxScoreUtils;
 import io.lemonjuice.flan_mai_plugin.utils.enums.Rank;
 import io.lemonjuice.flan_mai_plugin.utils.enums.RatingFrame;
 import io.lemonjuice.flan_mai_plugin.utils.enums.SongLevelLabel;

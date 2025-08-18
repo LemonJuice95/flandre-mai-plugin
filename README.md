@@ -9,7 +9,7 @@
 
 使用前请前往[原项目](https://github.com/Yuri-YuzuChaN/maimaiDX/)下载资源文件（位于原项目的README中）
 
-# Credits
+## Credits
 
 感谢 [Yuri-YuzuChaN](https://github.com/Yuri-YuzuChaN) 提供的源码
 

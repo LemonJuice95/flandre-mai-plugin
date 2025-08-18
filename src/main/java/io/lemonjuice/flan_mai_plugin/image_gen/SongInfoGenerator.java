@@ -22,9 +22,9 @@ public class SongInfoGenerator {
 
     public static boolean generate(int songId) {
         File file = new File(CACHE_PATH + songId + ".png");
-//        if(file.exists()) {
-//            return true;
-//        }
+        if(file.exists()) {
+            return true;
+        }
         try {
             outputToCache(drawInfo(songId), songId);
         } catch (Exception e) {

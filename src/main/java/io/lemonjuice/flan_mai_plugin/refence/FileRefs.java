@@ -1,5 +1,7 @@
 package io.lemonjuice.flan_mai_plugin.refence;
 
+import java.io.File;
+
 public class FileRefs {
     public static final String IMAGE_DIR = "./images/mai/";
     public static final String PIC_DIR = imageDir("pic/");
@@ -50,6 +52,8 @@ public class FileRefs {
     public static final String SONG_TYPE_SD = picDir("SD.png");
     public static final String SONG_TYPE_DX = picDir("DX.png");
 
+    public static final String SONG_INFO_BG = picDir("song_bg.png");
+
     public static final String SIYUAN_FONT = "./fonts/ResourceHanRoundedCN-Bold.ttf";
     public static final String TB_FONT = "./fonts/Torus SemiBold.otf";
 
@@ -79,6 +83,29 @@ public class FileRefs {
             throw new IllegalArgumentException("num must be in 0-9, but got: " + num);
         }
         return picDir("UI_NUM_Drating_" + num + ".png");
+    }
+
+    public static File songCover(int id) {
+        int songId = id;
+        String coverPath = SONG_COVER_DIR + songId + ".png";
+        File coverFile = new File(coverPath);
+        if(!coverFile.exists()) {
+            if(songId > 100000) {
+                songId -= 100000;
+            } else if(songId < 10000) {
+                songId += 10000;
+            } else if(songId > 10000) {
+                songId -= 10000;
+            }
+            coverPath =SONG_COVER_DIR + songId + ".png";
+            coverFile = new File(coverPath);
+        }
+        if(!coverFile.exists()) {
+            songId = 11000;
+            coverPath = SONG_COVER_DIR + songId + ".png";
+            coverFile = new File(coverPath);
+        }
+        return coverFile;
     }
 
     private static String picDir(String path) {

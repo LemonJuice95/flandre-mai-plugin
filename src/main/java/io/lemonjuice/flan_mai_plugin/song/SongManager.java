@@ -11,7 +11,9 @@ import org.json.JSONObject;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Log4j2
@@ -27,14 +29,59 @@ public class SongManager {
         return TITLE_MAP.get(title);
     }
 
+    public static List<Song> getSongByAlias(String alias) {
+        List<Song> result = new ArrayList<>();
+        for(Song s : ID_MAP.values()) {
+            if(s.alias.contains(alias)) {
+                result.add(s);
+            }
+        }
+        return result;
+    }
+
     public static void init() {
         JSONArray songsJson = requestSongListRaw();
+        JSONObject chartStats = requestChartStats();
         for(int i = 0; i < songsJson.length(); i++) {
             JSONObject songJson = songsJson.getJSONObject(i);
             Song song = parseSong(songJson);
+            if(chartStats.has(String.valueOf(song.id))) {
+                JSONArray charts = chartStats.getJSONArray(String.valueOf(song.id));
+                for (int j = 0; j < song.charts.size(); j++) {
+                    song.charts.get(j).fitDIff = charts.getJSONObject(j).getFloat("fit_diff");
+                }
+            }
             ID_MAP.put(song.id, song);
             TITLE_MAP.put(song.title, song);
         }
+
+        JSONArray aliasJson = requestSongAlias();
+        for(int i = 0; i < aliasJson.length(); i++) {
+            JSONObject json = aliasJson.getJSONObject(i);
+            int songId = json.getInt("SongID");
+            JSONArray songAlias = json.getJSONArray("Alias");
+            Song song = ID_MAP.get(songId);
+            for(int j = 0; j < songAlias.length(); j++) {
+                song.alias.add(songAlias.getString(j));
+            }
+        }
+    }
+
+    @Nullable
+    private static JSONObject requestChartStats() {
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpGet get = new HttpGet("https://www.diving-fish.com/api/maimaidxprober/chart_stats");
+            HttpResponse response = httpClient.execute(get);
+            if(response.getStatusLine().getStatusCode() != 200) {
+                log.error("获取谱面信息失败！疑似网络异常");
+                return null;
+            }
+            JSONObject outer = new JSONObject(EntityUtils.toString(response.getEntity()));
+            return outer.getJSONObject("charts");
+        } catch (IOException e) {
+            log.error("获取谱面信息失败！", e);
+        }
+        return null;
     }
 
     @Nullable
@@ -43,12 +90,29 @@ public class SongManager {
             HttpGet get = new HttpGet("https://www.diving-fish.com/api/maimaidxprober/music_data");
             HttpResponse response = httpClient.execute(get);
             if(response.getStatusLine().getStatusCode() != 200) {
-                log.error("获取歌曲列表失败！");
+                log.error("获取歌曲列表失败！疑似网络异常");
                 return null;
             }
+
             return new JSONArray(EntityUtils.toString(response.getEntity()));
         } catch (IOException e) {
             log.error("获取歌曲列表失败！", e);
+        }
+        return null;
+    }
+
+    @Nullable
+    private static JSONArray requestSongAlias() {
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpGet get = new HttpGet("https://www.yuzuchan.moe/api/maimaidx/maimaidxalias");
+            HttpResponse response = httpClient.execute(get);
+            if(response.getStatusLine().getStatusCode() != 200) {
+                log.error("获取歌曲别名失败！疑似网络异常");
+                return null;
+            }
+            return new JSONArray(new JSONObject(EntityUtils.toString(response.getEntity())).getJSONArray("content"));
+        } catch (IOException e) {
+            log.error("获取歌曲别名失败！", e);
         }
         return null;
     }
@@ -77,6 +141,9 @@ public class SongManager {
             JSONObject chartJson = jsonArray.getJSONObject(i);
             JSONArray notesJson = chartJson.getJSONArray("notes");
             for(int j = 0; j < notesJson.length(); j++) {
+                if(result.type.equals("SD") && j == 3) {
+                    chart.notes.add(0);
+                }
                 chart.notes.add(notesJson.getInt(j));
             }
             chart.author = chartJson.getString("charter");

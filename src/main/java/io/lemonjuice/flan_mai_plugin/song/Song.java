@@ -13,9 +13,12 @@ public class Song {
     public List<Chart> charts = new ArrayList<>();
     public Info info;
 
+    public List<String> alias = new ArrayList<>();
+
     public static class Chart {
         public List<Integer> notes = new ArrayList<>();
         public String author;
+        public float fitDIff = -1;
     }
 
     public static class Info {

@@ -18,8 +18,8 @@ import java.util.Map;
 
 @Log4j2
 public class SongManager {
-    public static final Map<Integer, Song> ID_MAP = new HashMap<>();
-    public static final Map<String, List<Song>> TITLE_MAP = new HashMap<>();
+    private static final Map<Integer, Song> ID_MAP = new HashMap<>();
+    private static final Map<String, List<Song>> TITLE_MAP = new HashMap<>();
 
     public static Song getSongById(int id) {
         return ID_MAP.get(id);

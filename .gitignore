@@ -46,3 +46,4 @@ bin/
 /tmpB50.json
 /cache/
 /config/
+/gradle.properties

@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'maven-publish'
 }
 
 java {
@@ -10,8 +11,30 @@ java {
 }
 
 group = 'io.lemonjuice'
-version = '0.1.0'
+version = '0.1.0-alpha'
 
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'io.lemonjuice'
+            artifactId = 'flan-mai-plugin'
+            version = '0.1.0-alpha'
+
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/LemonJuice95/flan-mai-plugin")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
 repositories {
     mavenCentral()
 }
@@ -35,6 +58,8 @@ dependencies {
     //Http Request
     implementation 'org.apache.httpcomponents:httpclient:4.5.14'
 }
+
+
 
 test {
     useJUnitPlatform()

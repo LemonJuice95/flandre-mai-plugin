@@ -242,9 +242,11 @@ public class DivingFishB50Generator {
 
         //星数
         int starNum = DxScoreUtils.getStarNum(dxScore, totalDxScore);
-        String starPicPath = FileRefs.dxScoreStars(starNum);
-        BufferedImage starPic = ImageIO.read(new File(starPicPath));
-        g.drawImage(starPic, x + 217, y + 80, 47, 26, null);
+        if(starNum > 0) {
+            String starPicPath = FileRefs.dxScoreStars(starNum);
+            BufferedImage starPic = ImageIO.read(new File(starPicPath));
+            g.drawImage(starPic, x + 217, y + 80, 47, 26, null);
+        }
 
         //定数 -> 单曲rating
         float ds = song.getFloat("ds");

@@ -9,6 +9,11 @@
 
 使用前请前往[原项目](https://github.com/Yuri-YuzuChaN/maimaiDX/)下载资源文件（位于原项目的README中）
 
+资源文件使用方式：
+
+1. 将压缩包中static目录下的mai目录放置在运行目录下的images目录中
+2. 将压缩包中static目录下的字体文件放置在运行目录下的fonts目录中
+
 ## Credits
 
 感谢 [Yuri-YuzuChaN](https://github.com/Yuri-YuzuChaN) 提供的源码

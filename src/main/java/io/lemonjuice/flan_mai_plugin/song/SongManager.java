@@ -19,14 +19,22 @@ import java.util.Map;
 @Log4j2
 public class SongManager {
     public static final Map<Integer, Song> ID_MAP = new HashMap<>();
-    public static final Map<String, Song> TITLE_MAP = new HashMap<>();
+    public static final Map<String, List<Song>> TITLE_MAP = new HashMap<>();
 
     public static Song getSongById(int id) {
         return ID_MAP.get(id);
     }
 
-    public static Song getSongByTitle(String title) {
+    public static List<Song> getSongByTitle(String title) {
         return TITLE_MAP.get(title);
+    }
+
+    public static boolean isSongIdExists(int id) {
+        return ID_MAP.containsKey(id);
+    }
+
+    public static boolean isSongTitleExists(String title) {
+        return TITLE_MAP.containsKey(title);
     }
 
     public static List<Song> getSongByAlias(String alias) {
@@ -52,7 +60,10 @@ public class SongManager {
                 }
             }
             ID_MAP.put(song.id, song);
-            TITLE_MAP.put(song.title, song);
+            if(!TITLE_MAP.containsKey(song.title)) {
+                TITLE_MAP.put(song.title, new ArrayList<>());
+            }
+            TITLE_MAP.get(song.title).add(song);
         }
 
         JSONArray aliasJson = requestSongAlias();

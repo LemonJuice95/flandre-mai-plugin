@@ -18,7 +18,7 @@
 
 ## Credits
 
-感谢 [Yuri-YuzuChaN](https://github.com/Yuri-YuzuChaN) 提供的源码
+感谢 [Yuri-YuzuChaN](https://github.com/Yuri-YuzuChaN) 提供的别名API与源码
 
 感谢 [Diving-Fish](https://github.com/Diving-Fish) 提供的查分器API与源码
 

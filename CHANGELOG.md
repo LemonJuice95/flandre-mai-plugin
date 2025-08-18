@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.2.0-alpha
+ - 增加谱面信息图片生成
+ - 增加单曲Rating计算
+
 ## v0.1.3-alpha
  - 修正dx分星数的判定
 

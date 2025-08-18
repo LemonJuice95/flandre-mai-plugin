@@ -50,8 +50,8 @@ public class FileRefs {
     public static final String SONG_TYPE_SD = picDir("SD.png");
     public static final String SONG_TYPE_DX = picDir("DX.png");
 
-    public static final String SIYUAN_FONT = "fonts/ResourceHanRoundedCN-Bold.ttf";
-    public static final String TB_FONT = "fonts/Torus SemiBold.otf";
+    public static final String SIYUAN_FONT = "./fonts/ResourceHanRoundedCN-Bold.ttf";
+    public static final String TB_FONT = "./fonts/Torus SemiBold.otf";
 
     public static String course(int course) {
         if(course < 0 || course > 22) {

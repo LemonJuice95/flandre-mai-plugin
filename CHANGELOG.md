@@ -1,6 +1,9 @@
 # Changelog
 
-## v0.3.3-alpha
+## v0.2.4-alpha
+ - 使SongManager线程安全，并添加初始化检查
+
+## v0.2.3-alpha
  - 在SongManager中添加一键查询的方法
 
 ## v0.2.2-alpha

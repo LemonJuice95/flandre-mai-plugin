@@ -2,6 +2,7 @@
 
 ## v0.2.4-alpha
  - 使SongManager线程安全，并添加初始化检查
+ - SongManager的初始化将异步进行
 
 ## v0.2.3-alpha
  - 在SongManager中添加一键查询的方法

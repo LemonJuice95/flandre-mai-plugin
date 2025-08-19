@@ -1,5 +1,6 @@
 package io.lemonjuice.flan_mai_plugin.song;
 
+import io.lemonjuice.flan_mai_plugin.exception.NotInitializedException;
 import lombok.extern.log4j.Log4j2;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -83,8 +84,8 @@ public class SongManager {
         return initialized.get();
     }
 
-    private static void checkInitializedOrThrow() throws IllegalStateException {
-        if(!initialized.get()) throw new IllegalStateException("歌曲信息未初始化完成");
+    private static void checkInitializedOrThrow() throws NotInitializedException {
+        if(!initialized.get()) throw new NotInitializedException("歌曲信息未初始化完成");
     }
 
     public static synchronized void init() {

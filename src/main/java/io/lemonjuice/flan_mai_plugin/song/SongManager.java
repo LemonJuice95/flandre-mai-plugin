@@ -15,11 +15,35 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Log4j2
 public class SongManager {
     private static final Map<Integer, Song> ID_MAP = new HashMap<>();
     private static final Map<String, List<Song>> TITLE_MAP = new HashMap<>();
+
+    public static List<Song> searchSong(String name) {
+        List<Song> result = new ArrayList<>();
+        Pattern idQuery = Pattern.compile("^(id)?(\\d+)$");
+        if(!name.isEmpty()) {
+            Matcher idMatcher = idQuery.matcher(name);
+            if(idMatcher.find()) {
+                int songId = Integer.parseInt(idMatcher.group(2));
+                if(isSongIdExists(songId)) {
+                    result.add(getSongById(songId));
+                }
+            }
+            if(result.isEmpty()) {
+                if(isSongTitleExists(name)) {
+                    result = getSongByTitle(name);
+                } else {
+                    result = getSongByAlias(name);
+                }
+            }
+        }
+        return result;
+    }
 
     public static Song getSongById(int id) {
         return ID_MAP.get(id);

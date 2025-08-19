@@ -12,18 +12,21 @@ import org.json.JSONObject;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Log4j2
 public class SongManager {
-    private static final Map<Integer, Song> ID_MAP = new HashMap<>();
-    private static final Map<String, List<Song>> TITLE_MAP = new HashMap<>();
+    private static final ConcurrentHashMap<Integer, Song> ID_MAP = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, List<Song>> TITLE_MAP = new ConcurrentHashMap<>();
+
+    private static final AtomicBoolean initialized = new AtomicBoolean(false);
 
     public static List<Song> searchSong(String name) {
+        checkInitializedOrThrow();
         List<Song> result = new ArrayList<>();
         Pattern idQuery = Pattern.compile("^(id)?(\\d+)$");
         if(!name.isEmpty()) {
@@ -46,22 +49,27 @@ public class SongManager {
     }
 
     public static Song getSongById(int id) {
+        checkInitializedOrThrow();
         return ID_MAP.get(id);
     }
 
     public static List<Song> getSongByTitle(String title) {
+        checkInitializedOrThrow();
         return TITLE_MAP.get(title);
     }
 
     public static boolean isSongIdExists(int id) {
+        checkInitializedOrThrow();
         return ID_MAP.containsKey(id);
     }
 
     public static boolean isSongTitleExists(String title) {
+        checkInitializedOrThrow();
         return TITLE_MAP.containsKey(title);
     }
 
     public static List<Song> getSongByAlias(String alias) {
+        checkInitializedOrThrow();
         List<Song> result = new ArrayList<>();
         for(Song s : ID_MAP.values()) {
             if(s.alias.contains(alias)) {
@@ -71,7 +79,15 @@ public class SongManager {
         return result;
     }
 
-    public static void init() {
+    public static boolean isInitialized() {
+        return initialized.get();
+    }
+
+    private static void checkInitializedOrThrow() throws IllegalStateException {
+        if(!initialized.get()) throw new IllegalStateException("歌曲信息未初始化完成");
+    }
+
+    public static synchronized void init() {
         JSONArray songsJson = requestSongListRaw();
         JSONObject chartStats = requestChartStats();
         for(int i = 0; i < songsJson.length(); i++) {
@@ -100,6 +116,8 @@ public class SongManager {
                 song.alias.add(songAlias.getString(j));
             }
         }
+
+        initialized.set(true);
     }
 
     @Nullable

@@ -5,7 +5,7 @@ import io.lemonjuice.flan_mai_plugin.song.SongManager;
 
 public class MaiPluginInit {
     public static void init() {
-        SongManager.init();
         ConfigRefs.init();
+        Thread.startVirtualThread(SongManager::init);
     }
 }

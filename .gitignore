@@ -43,7 +43,7 @@ bin/
 
 ### test ###
 /images/
-/tmpB50.json
+/temp/
 /cache/
 /config/
 /gradle.properties

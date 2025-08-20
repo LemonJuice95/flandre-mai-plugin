@@ -8,6 +8,7 @@ import java.util.Properties;
 @Log4j2
 public class ConfigRefs {
     public static String BOT_NAME;
+    public static String DIVING_FISH_TOKEN;
 
     public static void init() {
         File cfgFile = new File("./config/mai_plugin.properties");
@@ -22,6 +23,7 @@ public class ConfigRefs {
             properties.load(input);
 
             BOT_NAME = properties.getProperty("bot.name");
+            DIVING_FISH_TOKEN = properties.getProperty("diving_fish.dev_token");
 
         } catch (IOException e) {
             log.error("加载舞萌插件配置文件失败！", e);

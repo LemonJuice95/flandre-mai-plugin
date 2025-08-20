@@ -89,6 +89,10 @@ public class SongManager {
     }
 
     public static synchronized void init() {
+        initialized.set(false);
+        ID_MAP.clear();
+        TITLE_MAP.clear();
+
         JSONArray songsJson = requestSongListRaw();
         JSONObject chartStats = requestChartStats();
         for(int i = 0; i < songsJson.length(); i++) {

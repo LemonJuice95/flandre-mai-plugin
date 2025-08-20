@@ -5,7 +5,7 @@
 
 本项目移植自 [Yuri-YuzuChaN/maimaiDX](https://github.com/Yuri-YuzuChaN/maimaiDX/)
 
-基于java的舞萌bot插件
+基于java的舞萌查询框架
 
 使用前请前往[原项目](https://github.com/Yuri-YuzuChaN/maimaiDX/)下载资源文件（位于原项目的README中）
 
@@ -25,4 +25,4 @@
 ## License
 
 本项目基于 [Yuri-YuzuChaN/maimaiDX](https://github.com/Yuri-YuzuChaN/maimaiDX/) 移植，遵循原项目的 [MIT 许可证](LICENSE)。  
-您可以自由使用、修改或分发本代码，但须保留原始版权声明与许可证文件。
+您可以自由使用、修改或分发本项目的代码，但须保留原始版权声明与许可证文件。

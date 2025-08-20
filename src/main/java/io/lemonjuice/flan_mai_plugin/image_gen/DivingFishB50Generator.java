@@ -4,6 +4,7 @@ import io.lemonjuice.flan_mai_plugin.refence.ConfigRefs;
 import io.lemonjuice.flan_mai_plugin.refence.Credits;
 import io.lemonjuice.flan_mai_plugin.refence.FileRefs;
 import io.lemonjuice.flan_mai_plugin.song.SongManager;
+import io.lemonjuice.flan_mai_plugin.utils.ImageUtils;
 import io.lemonjuice.flan_mai_plugin.utils.StringUtils;
 import io.lemonjuice.flan_mai_plugin.utils.DxScoreUtils;
 import io.lemonjuice.flan_mai_plugin.utils.enums.Rank;
@@ -41,12 +42,12 @@ public class DivingFishB50Generator {
     public static boolean generate(long qq) {
         try {
             JSONObject json = divingFishRequest(qq);
-            outputToCache(drawB50(json, qq), qq);
+            File file = new File("./cache/mai_b50/b50_" + qq + ".png");
+            return ImageUtils.outputImage(drawB50(json, qq), file, "PNG");
         } catch (Exception e) {
             log.error("生成B50失败！");
             return false;
         }
-        return true;
     }
 
     private static BufferedImage drawB50(JSONObject json, long qq) {
@@ -288,21 +289,6 @@ public class DivingFishB50Generator {
         int idXOffset = idMetrics.stringWidth(String.valueOf(songId)) / 2;
         g.drawString(String.valueOf(songId), x + 26 - idXOffset, y + 102);
         g.setColor(Color.WHITE);
-    }
-
-    private static void outputToCache(BufferedImage b50Image, long qq) {
-        try {
-            File file = new File("./cache/mai_b50/b50_" + qq + ".png");
-            if (file.exists()) {
-                file.delete();
-            }
-            if(!file.getParentFile().exists()) {
-                file.getParentFile().mkdirs();
-            }
-            ImageIO.write(b50Image, "PNG", file);
-        } catch (IOException e) {
-            log.error("输出图片失败！", e);
-        }
     }
 
     @Nullable

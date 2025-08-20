@@ -4,6 +4,7 @@ import io.lemonjuice.flan_mai_plugin.refence.Credits;
 import io.lemonjuice.flan_mai_plugin.refence.FileRefs;
 import io.lemonjuice.flan_mai_plugin.song.Song;
 import io.lemonjuice.flan_mai_plugin.song.SongManager;
+import io.lemonjuice.flan_mai_plugin.utils.ImageUtils;
 import io.lemonjuice.flan_mai_plugin.utils.RatingUtils;
 import io.lemonjuice.flan_mai_plugin.utils.StringUtils;
 import io.lemonjuice.flan_mai_plugin.utils.enums.Rank;
@@ -26,7 +27,7 @@ public class SongInfoGenerator {
             return true;
         }
         try {
-            outputToCache(drawInfo(songId), songId);
+            ImageUtils.outputImage(drawInfo(songId), file, "PNG");
         } catch (Exception e) {
             log.error("生成歌曲信息失败！");
             return false;
@@ -199,20 +200,5 @@ public class SongInfoGenerator {
             log.error("歌曲信息图片处理失败！", e);
         }
         return null;
-    }
-
-    private static void outputToCache(BufferedImage image, int songId) {
-        try {
-            File file = new File(CACHE_PATH + songId + ".png");
-            if(file.exists()) {
-                file.delete();
-            }
-            if(!file.getParentFile().exists()) {
-                file.getParentFile().mkdirs();
-            }
-            ImageIO.write(image, "PNG", file);
-        } catch (IOException e) {
-            log.error("输出图片失败！", e);
-        }
     }
 }

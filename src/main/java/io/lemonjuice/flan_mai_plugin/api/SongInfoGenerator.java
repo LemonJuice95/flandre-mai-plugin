@@ -1,5 +1,6 @@
 package io.lemonjuice.flan_mai_plugin.api;
 
+import io.lemonjuice.flan_mai_plugin.exception.NotInitializedException;
 import io.lemonjuice.flan_mai_plugin.image.ImageFormat;
 import io.lemonjuice.flan_mai_plugin.image.renderer.SongInfoRenderer;
 import lombok.extern.log4j.Log4j2;
@@ -19,6 +20,9 @@ public class SongInfoGenerator {
             SongInfoRenderer renderer = new SongInfoRenderer(songId, file, ImageFormat.PNG);
             return renderer.renderAndOutput();
         } catch (Exception e) {
+            if(e instanceof NotInitializedException) {
+                throw e;
+            }
             log.error("生成歌曲信息失败！");
             return false;
         }

@@ -1,5 +1,6 @@
 package io.lemonjuice.flan_mai_plugin.api;
 
+import io.lemonjuice.flan_mai_plugin.exception.NotInitializedException;
 import io.lemonjuice.flan_mai_plugin.image.ImageFormat;
 import io.lemonjuice.flan_mai_plugin.image.renderer.B50ImageRenderer;
 import io.lemonjuice.flan_mai_plugin.service.MaiMaiProberService;
@@ -17,6 +18,9 @@ public class DivingFishB50Generator {
             B50ImageRenderer renderer = new B50ImageRenderer(qq, json, file, ImageFormat.PNG);
             return renderer.renderAndOutput();
         } catch (Exception e) {
+            if(e instanceof NotInitializedException) {
+                throw e;
+            }
             log.error("生成B50失败！");
             return false;
         }

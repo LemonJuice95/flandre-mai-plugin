@@ -13,7 +13,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 @Log4j2
-public class DivingFishService {
+public class MaiMaiProberService {
     private static String URL = "https://www.diving-fish.com/api/maimaidxprober/";
 
     public static JSONObject requestB50(long qq) {

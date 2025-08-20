@@ -1,5 +1,6 @@
 package io.lemonjuice.flan_mai_plugin.utils;
 
+import io.lemonjuice.flan_mai_plugin.image.ImageFormat;
 import lombok.extern.log4j.Log4j2;
 
 import javax.imageio.ImageIO;
@@ -9,7 +10,7 @@ import java.io.IOException;
 
 @Log4j2
 public class ImageUtils {
-    public static boolean outputImage(BufferedImage image, File file, String format) {
+    public static boolean outputImage(BufferedImage image, File file, ImageFormat format) {
         try {
             if(file.exists()) {
                 file.delete();
@@ -17,7 +18,7 @@ public class ImageUtils {
             if(!file.getParentFile().exists()) {
                 file.getParentFile().mkdirs();
             }
-            ImageIO.write(image, format, file);
+            ImageIO.write(image, format.getFormatName(), file);
         } catch (IOException e) {
             log.error("输出图片失败！", e);
             return false;

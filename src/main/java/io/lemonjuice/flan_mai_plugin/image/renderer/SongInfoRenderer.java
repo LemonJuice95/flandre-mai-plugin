@@ -1,10 +1,10 @@
-package io.lemonjuice.flan_mai_plugin.image_gen;
+package io.lemonjuice.flan_mai_plugin.image.renderer;
 
+import io.lemonjuice.flan_mai_plugin.image.ImageFormat;
 import io.lemonjuice.flan_mai_plugin.refence.Credits;
 import io.lemonjuice.flan_mai_plugin.refence.FileRefs;
 import io.lemonjuice.flan_mai_plugin.song.Song;
 import io.lemonjuice.flan_mai_plugin.song.SongManager;
-import io.lemonjuice.flan_mai_plugin.utils.ImageUtils;
 import io.lemonjuice.flan_mai_plugin.utils.RatingUtils;
 import io.lemonjuice.flan_mai_plugin.utils.StringUtils;
 import io.lemonjuice.flan_mai_plugin.utils.enums.Rank;
@@ -15,29 +15,20 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 
 @Log4j2
-public class SongInfoGenerator {
-    private static final String CACHE_PATH = "./cache/mai_song_info/";
+public class SongInfoRenderer extends OutputtedImageRenderer {
+    private final int songId;
 
-    public static boolean generate(int songId) {
-        File file = new File(CACHE_PATH + songId + ".png");
-        if(file.exists()) {
-            return true;
-        }
-        try {
-            ImageUtils.outputImage(drawInfo(songId), file, "PNG");
-        } catch (Exception e) {
-            log.error("生成歌曲信息失败！");
-            return false;
-        }
-        return true;
+    public SongInfoRenderer(int songId, File output, ImageFormat format) {
+        super(output, format);
+        this.songId = songId;
     }
 
-    private static BufferedImage drawInfo(int songId) {
+    @Override
+    public BufferedImage render() {
         try {
-            Song song = SongManager.getSongById(songId);
+            Song song = SongManager.getSongById(this.songId);
             Font siyuan;
             Font tb;
             Color defaultColor = new Color(124, 130, 255, 255);
@@ -63,7 +54,7 @@ public class SongInfoGenerator {
             g.drawImage(logo, 65, 25, 249, 120, null);
 
             //曲绘
-            BufferedImage cover = ImageIO.read(FileRefs.songCover(songId));
+            BufferedImage cover = ImageIO.read(FileRefs.songCover(this.songId));
             g.drawImage(cover, 128, 195, 250, 250, null);
 
             //标题
@@ -92,7 +83,7 @@ public class SongInfoGenerator {
             g.drawString(bpm, 460, 341);
 
             //ID
-            String id = String.format("ID %d", songId);
+            String id = String.format("ID %d", this.songId);
             tb = tb.deriveFont(30.0F);
             g.setFont(tb);
             g.drawString(id, 407, 433);

@@ -1,8 +1,8 @@
 package b50;
 
 import io.lemonjuice.flan_mai_plugin.MaiPluginInit;
-import io.lemonjuice.flan_mai_plugin.image_gen.DivingFishB50Generator;
-import io.lemonjuice.flan_mai_plugin.image_gen.SongInfoGenerator;
+import io.lemonjuice.flan_mai_plugin.api.DivingFishB50Generator;
+import io.lemonjuice.flan_mai_plugin.api.SongInfoGenerator;
 import org.junit.jupiter.api.Test;
 
 public class TestTool {

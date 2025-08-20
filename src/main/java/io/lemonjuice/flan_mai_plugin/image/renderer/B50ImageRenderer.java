@@ -1,36 +1,28 @@
-package io.lemonjuice.flan_mai_plugin.image_gen;
+package io.lemonjuice.flan_mai_plugin.image.renderer;
 
-import io.lemonjuice.flan_mai_plugin.refence.ConfigRefs;
+import io.lemonjuice.flan_mai_plugin.image.ImageFormat;
 import io.lemonjuice.flan_mai_plugin.refence.Credits;
 import io.lemonjuice.flan_mai_plugin.refence.FileRefs;
+import io.lemonjuice.flan_mai_plugin.service.AvatarService;
 import io.lemonjuice.flan_mai_plugin.song.SongManager;
-import io.lemonjuice.flan_mai_plugin.utils.ImageUtils;
-import io.lemonjuice.flan_mai_plugin.utils.StringUtils;
 import io.lemonjuice.flan_mai_plugin.utils.DxScoreUtils;
+import io.lemonjuice.flan_mai_plugin.utils.StringUtils;
 import io.lemonjuice.flan_mai_plugin.utils.enums.Rank;
 import io.lemonjuice.flan_mai_plugin.utils.enums.RatingFrame;
 import io.lemonjuice.flan_mai_plugin.utils.enums.SongLevelLabel;
 import lombok.extern.log4j.Log4j2;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
-import java.net.URI;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 @Log4j2
-public class DivingFishB50Generator {
+public class B50ImageRenderer extends OutputtedImageRenderer {
     private static final Color[] idColors = {
             new Color(129, 217, 85, 255),
             new Color(245, 189, 21, 255),
@@ -38,19 +30,18 @@ public class DivingFishB50Generator {
             new Color(138, 0, 226, 255),
             new Color(159, 81, 220, 255)
     };
+    
+    private final long qq;
+    private final JSONObject b50Data;
 
-    public static boolean generate(long qq) {
-        try {
-            JSONObject json = divingFishRequest(qq);
-            File file = new File("./cache/mai_b50/b50_" + qq + ".png");
-            return ImageUtils.outputImage(drawB50(json, qq), file, "PNG");
-        } catch (Exception e) {
-            log.error("生成B50失败！");
-            return false;
-        }
+    public B50ImageRenderer(long qq, JSONObject b50Data, File output, ImageFormat format) {
+        super(output, format);
+        this.qq = qq;
+        this.b50Data = b50Data;
     }
 
-    private static BufferedImage drawB50(JSONObject json, long qq) {
+    @Override
+    public BufferedImage render() {
         try {
             BufferedImage bg = ImageIO.read(new File(FileRefs.B50_BG));
 
@@ -71,8 +62,8 @@ public class DivingFishB50Generator {
 
             //牌子
             String platePath = FileRefs.DEFAULT_PLATE;
-            if(!json.getString("plate").isEmpty()) {
-                platePath = FileRefs.PLATE_DIR + json.getString("plate") + ".png";
+            if(!this.b50Data.getString("plate").isEmpty()) {
+                platePath = FileRefs.PLATE_DIR + this.b50Data.getString("plate") + ".png";
             }
             BufferedImage plate = ImageIO.read(new File(platePath));
             g.drawImage(plate, 300, 60, 800, 130, null);
@@ -80,7 +71,7 @@ public class DivingFishB50Generator {
             //头像
             String avatarPath = FileRefs.DEFAULT_AVATAR;
             BufferedImage avatar = ImageIO.read(new File(avatarPath));
-            BufferedImage qqAvatar = getQQLogo(qq);
+            BufferedImage qqAvatar = AvatarService.getAvatarByQQ(this.qq);
             g.drawImage(avatar, 305, 65, 120, 120, null);
             if(qqAvatar != null) {
                 g.drawImage(qqAvatar, 308, 68, 114, 114, null);
@@ -90,7 +81,7 @@ public class DivingFishB50Generator {
             BufferedImage nicknameBg = ImageIO.read(new File(FileRefs.NAME));
             g.drawImage(nicknameBg, 435, 115, null);
             try (FileInputStream input = new FileInputStream(FileRefs.SIYUAN_FONT)) {
-                String nickname = json.getString("nickname");
+                String nickname = this.b50Data.getString("nickname");
                 Font nicknameFont = Font.createFont(Font.TRUETYPE_FONT, input).deriveFont(28.0F);
                 g.setFont(nicknameFont);
                 g.setColor(Color.BLACK);
@@ -99,13 +90,13 @@ public class DivingFishB50Generator {
             }
 
             //段位
-            int courseLevel = json.getInt("additional_rating");
+            int courseLevel = this.b50Data.getInt("additional_rating");
             BufferedImage course = ImageIO.read(new File(FileRefs.course(courseLevel)));
             g.drawImage(course, 625, 120, 80, 32, null);
 
 
             //Rating
-            int rating = json.getInt("rating");
+            int rating = this.b50Data.getInt("rating");
             int rating_ = rating;
             RatingFrame frame = RatingFrame.getFrameByRating(rating_);
             BufferedImage frameImage = ImageIO.read(new File(frame.getPicPath()));
@@ -119,7 +110,7 @@ public class DivingFishB50Generator {
             } while (rating_ != 0);
 
             //b35
-            JSONArray b35Json = json.getJSONObject("charts").getJSONArray("sd");
+            JSONArray b35Json = this.b50Data.getJSONObject("charts").getJSONArray("sd");
             for(int i = 0; i < b35Json.length(); i++) {
                 JSONObject songJson = b35Json.getJSONObject(i);
                 drawSong(songJson, g, 16 + 276 * (i % 5), 235 + 114 * (i / 5));
@@ -127,7 +118,7 @@ public class DivingFishB50Generator {
             }
 
             //b15
-            JSONArray b15Json = json.getJSONObject("charts").getJSONArray("dx");
+            JSONArray b15Json = this.b50Data.getJSONObject("charts").getJSONArray("dx");
             for(int i = 0; i < b15Json.length(); i++) {
                 JSONObject songJson = b15Json.getJSONObject(i);
                 drawSong(songJson, g, 16 + 276 * (i % 5), 1085 + 114 * (i / 5));
@@ -181,7 +172,7 @@ public class DivingFishB50Generator {
         }
     }
 
-    private static void drawSong(JSONObject song, Graphics2D g, int x, int y) throws IOException, FontFormatException {
+    private void drawSong(JSONObject song, Graphics2D g, int x, int y) throws IOException, FontFormatException {
         int songId = song.getInt("song_id");
         Color fontColor = Color.WHITE;
         Font tbFont;
@@ -289,46 +280,5 @@ public class DivingFishB50Generator {
         int idXOffset = idMetrics.stringWidth(String.valueOf(songId)) / 2;
         g.drawString(String.valueOf(songId), x + 26 - idXOffset, y + 102);
         g.setColor(Color.WHITE);
-    }
-
-    @Nullable
-    private static JSONObject divingFishRequest(long qq) {
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            HttpPost post = new HttpPost("https://www.diving-fish.com/api/maimaidxprober/query/player");
-            JSONObject body = new JSONObject();
-            body.put("qq", qq);
-            body.put("b50", true);
-            StringEntity requestEntity = new StringEntity(body.toString(), ContentType.APPLICATION_JSON);
-            post.setEntity(requestEntity);
-
-            HttpResponse response = httpClient.execute(post);
-            if(response.getStatusLine().getStatusCode() != 200) {
-                log.error("B50拉取失败！qq:{}", qq);
-                return null;
-            }
-            return new JSONObject(EntityUtils.toString(response.getEntity()));
-        } catch (IOException e) {
-            log.error(e);
-        }
-        return null;
-    }
-
-    @Nullable
-    private static BufferedImage getQQLogo(long qq) {
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            URI uri = URI.create(String.format("https://q1.qlogo.cn/g?b=qq&nk=%d&s=100", qq));
-            HttpGet get = new HttpGet(uri);
-            HttpResponse response = httpClient.execute(get);
-            if(response.getStatusLine().getStatusCode() != 200) {
-                log.error("qq头像拉取失败！qq:{}", qq);
-                return null;
-            }
-            try (InputStream input = new ByteArrayInputStream(EntityUtils.toByteArray(response.getEntity()))) {
-                return ImageIO.read(input);
-            }
-        } catch (IOException e) {
-            log.error(e);
-        }
-        return null;
     }
 }

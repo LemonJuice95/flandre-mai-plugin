@@ -102,6 +102,7 @@ public class SongPlayDataRenderer extends OutputtedImageRenderer {
             String line1 = Credits.LINE1;
             String line2 = Credits.LINE2;
             siyuan = siyuan.deriveFont(14.0F);
+            g.setColor(textColor);
             g.setFont(siyuan);
             FontMetrics creditsMetrics = g.getFontMetrics();
             int line1XOffset = creditsMetrics.stringWidth(line1) / 2;

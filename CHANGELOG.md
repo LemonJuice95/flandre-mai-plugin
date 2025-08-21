@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.4.0
+ - 添加查询单曲游玩信息的功能 （需要在配置文件的`diving_fish.dev_token`一项中填写开发者token）
+
 ## v0.3.0-alpha
  - api的`generate()`方法现在会返回输出文件的路径
  - api内的逻辑被拆分（网络请求、图片绘制与输出现在由单独的类负责）

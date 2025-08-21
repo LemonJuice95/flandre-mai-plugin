@@ -26,7 +26,7 @@ public class SongInfoGenerator {
             if(e instanceof NotInitializedException) {
                 throw e;
             }
-            log.error("生成歌曲信息失败！");
+            log.error("生成歌曲信息失败！", e);
             return "";
         }
     }

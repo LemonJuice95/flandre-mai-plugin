@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.3.0-alpha
+ - api内的逻辑被拆分（网络请求、图片绘制与输出现在由单独的类负责）
+ - api类在遇到NotInitializedException时会继续抛出供外部方法捕获并处理
+ - SongManager的初始化逻辑实际上改为“更新”（即刷新内存中的数据）
+ - 修复SongManager获取拟合难度时可能出现的npe
+
 ## v0.2.4-alpha
  - 使SongManager线程安全，并添加初始化检查
  - SongManager的初始化将异步进行

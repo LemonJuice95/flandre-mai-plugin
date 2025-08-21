@@ -101,8 +101,10 @@ public class SongManager {
             Song song = parseSong(songJson);
             if(chartStats.has(String.valueOf(song.id))) {
                 JSONArray charts = chartStats.getJSONArray(String.valueOf(song.id));
-                for (int j = 0; j < song.charts.size(); j++) {
-                    song.charts.get(j).fitDIff = charts.getJSONObject(j).getFloat("fit_diff");
+                for (int j = 0; j < charts.length(); j++) {
+                    if(charts.getJSONObject(j).has("fit_diff")) {
+                        song.charts.get(j).fitDIff = charts.getJSONObject(j).getFloat("fit_diff");
+                    }
                 }
             }
             ID_MAP.put(song.id, song);

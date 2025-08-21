@@ -140,6 +140,30 @@ public class MaiMaiProberService {
         return null;
     }
 
+    public static JSONObject requestTestPlayData() {
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpGet get = new HttpGet(urlWithEndpoint("/player/test_data"));
+            HttpResponse response = httpClient.execute(get);
+            String responseStr = EntityUtils.toString(response.getEntity());
+            JSONObject json;
+            try {
+                json = new JSONObject(responseStr);
+            } catch (JSONException e) {
+                json = null;
+            }
+
+            if(response.getStatusLine().getStatusCode() != 200) {
+                log.error("测试游玩记录拉取失败！");
+                return null;
+            }
+
+            return json;
+        } catch (IOException e) {
+            log.error(e);
+        }
+        return null;
+    }
+
     @Nullable
     public static JSONObject requestChartStats() {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {

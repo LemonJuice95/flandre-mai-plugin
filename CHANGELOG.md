@@ -1,7 +1,7 @@
 # Changelog
 
 ## v0.4.1-hotfix
- - 修复有`Re:Master`难度的歌曲渲染底部Credits时的颜色问题
+ - 修复`SongPlayDataRenderer`有`Re:Master`难度的歌曲渲染底部Credits时的颜色问题
 
 ## v0.4.0
  - 添加查询单曲游玩信息的功能 （需要在配置文件的`diving_fish.dev_token`一项中填写开发者token）

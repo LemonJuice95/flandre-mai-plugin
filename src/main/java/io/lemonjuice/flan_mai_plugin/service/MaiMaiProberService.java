@@ -1,5 +1,8 @@
 package io.lemonjuice.flan_mai_plugin.service;
 
+import io.lemonjuice.flan_mai_plugin.exception.InvalidTokenException;
+import io.lemonjuice.flan_mai_plugin.exception.TokenTooMuchUsageException;
+import io.lemonjuice.flan_mai_plugin.refence.ConfigRefs;
 import lombok.extern.log4j.Log4j2;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -10,18 +13,22 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.util.Map;
 
 @Log4j2
 public class MaiMaiProberService {
-    private static String URL = "https://www.diving-fish.com/api/maimaidxprober/";
+    private static final String DEVELOPER_TOKEN_HEADER_NAME = "Developer-Token";
+    private static final String URL = "https://www.diving-fish.com/api/maimaidxprober/";
 
+    @Nullable
     public static JSONObject requestB50(long qq) {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            HttpPost post = new HttpPost(urlSuffix("query/player"));
+            HttpPost post = new HttpPost(urlWithEndpoint("query/player"));
             JSONObject body = new JSONObject();
             body.put("qq", qq);
             body.put("b50", true);
@@ -41,9 +48,102 @@ public class MaiMaiProberService {
     }
 
     @Nullable
+    public static JSONArray requestPlayerRecords(long qq) {
+        JSONObject json = requestPlayDataGet(qq);
+        if(json != null && json.has("records")) {
+            return json.getJSONArray("records");
+        }
+        return null;
+    }
+
+    @Nullable
+    public static JSONObject requestPlayDataGet(long qq) {
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            String endpoint = String.format("dev/player/records?qq=%d", qq);
+            HttpGet get = new HttpGet(urlWithEndpoint(endpoint));
+            get.addHeader(DEVELOPER_TOKEN_HEADER_NAME, ConfigRefs.DIVING_FISH_TOKEN.get());
+            HttpResponse response = httpClient.execute(get);
+            String responseStr = EntityUtils.toString(response.getEntity());
+            JSONObject json;
+            try {
+                json = new JSONObject(responseStr);
+            } catch (JSONException e) {
+                json = null;
+            }
+
+            if(response.getStatusLine().getStatusCode() == 400) {
+                if (json != null && json.has("msg")) {
+                    if (json.getString("msg").equals("请先联系水鱼申请开发者token") ||
+                            json.getString("msg").equals("开发者token有误")) {
+                        throw new InvalidTokenException("token无效");
+                    }
+                    //XXX 不太确定
+                    if (json.getString("msg").equals("开发者token被禁用")) {
+                        throw new TokenTooMuchUsageException("token使用次数到达上限");
+                    }
+                }
+                return null;
+            } else if(response.getStatusLine().getStatusCode() != 200) {
+                log.error("游玩记录拉取失败！qq:{}", qq);
+                return null;
+            }
+
+            return json;
+        } catch (IOException e) {
+            log.error(e);
+        }
+        return null;
+    }
+
+    @Nullable
+    public static JSONObject requestPlayDataPost(long qq, int songId) {
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpPost post = new HttpPost(urlWithEndpoint("dev/player/record"));
+
+            post.setHeader(DEVELOPER_TOKEN_HEADER_NAME, ConfigRefs.DIVING_FISH_TOKEN.get());
+
+            JSONObject body = new JSONObject();
+            body.put("qq", qq);
+            body.put("music_id", songId);
+            StringEntity requestEntity = new StringEntity(body.toString(), ContentType.APPLICATION_JSON);
+            post.setEntity(requestEntity);
+
+            HttpResponse response = httpClient.execute(post);
+            String responseStr = EntityUtils.toString(response.getEntity());
+            JSONObject json;
+            try {
+                json = new JSONObject(responseStr);
+            } catch (JSONException e) {
+                json = null;
+            }
+
+            if(response.getStatusLine().getStatusCode() == 400) {
+                if(json != null && json.has("msg")) {
+                    if (json.getString("msg").equals("请先联系水鱼申请开发者token") ||
+                        json.getString("msg").equals("开发者token有误")) {
+                        throw new InvalidTokenException("token无效");
+                    }
+                    //XXX 不太确定
+                    if(json.getString("msg").equals("开发者token被禁用")) {
+                        throw new TokenTooMuchUsageException("token使用次数到达上限");
+                    }
+                }
+                return null;
+            } else if(response.getStatusLine().getStatusCode() != 200) {
+                log.error("游玩记录拉取失败！qq:{}, 歌曲id:{}", qq, songId);
+                return null;
+            }
+            return json;
+        } catch (IOException e) {
+            log.error(e);
+        }
+        return null;
+    }
+
+    @Nullable
     public static JSONObject requestChartStats() {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            HttpGet get = new HttpGet(urlSuffix("chart_stats"));
+            HttpGet get = new HttpGet(urlWithEndpoint("chart_stats"));
             HttpResponse response = httpClient.execute(get);
             if(response.getStatusLine().getStatusCode() != 200) {
                 log.error("获取谱面信息失败！疑似网络异常");
@@ -60,7 +160,7 @@ public class MaiMaiProberService {
     @Nullable
     public static JSONArray requestSongListRaw() {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            HttpGet get = new HttpGet(urlSuffix("music_data"));
+            HttpGet get = new HttpGet(urlWithEndpoint("music_data"));
             HttpResponse response = httpClient.execute(get);
             if(response.getStatusLine().getStatusCode() != 200) {
                 log.error("获取歌曲列表失败！疑似网络异常");
@@ -90,7 +190,7 @@ public class MaiMaiProberService {
         return null;
     }
 
-    private static String urlSuffix(String suffix) {
+    private static String urlWithEndpoint(String suffix) {
         return URL + suffix;
     }
 }

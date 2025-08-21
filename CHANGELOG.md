@@ -1,10 +1,11 @@
 # Changelog
 
 ## v0.3.0-alpha
+ - api的`generate()`方法现在会返回输出文件的路径
  - api内的逻辑被拆分（网络请求、图片绘制与输出现在由单独的类负责）
- - api类在遇到NotInitializedException时会继续抛出供外部方法捕获并处理
- - SongManager的初始化逻辑实际上改为“更新”（即刷新内存中的数据）
- - 修复SongManager获取拟合难度时可能出现的npe
+ - api类在遇到`NotInitializedException`时会继续抛出供外部方法捕获并处理
+ - `SongManager`的初始化逻辑实际上改为“更新”（即刷新内存中的数据）
+ - 修复`SongManager`获取拟合难度时可能出现的`NullPointerException`
 
 ## v0.2.4-alpha
  - 使SongManager线程安全，并添加初始化检查

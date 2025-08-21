@@ -11,20 +11,23 @@ import java.io.File;
 public class SongInfoGenerator {
     private static final String CACHE_PATH = "./cache/mai_song_info/";
 
-    public static boolean generate(int songId) {
+    public static String generate(int songId) {
         File file = new File(CACHE_PATH + songId + ".png");
         if(file.exists()) {
-            return true;
+            return file.getPath();
         }
         try {
             SongInfoRenderer renderer = new SongInfoRenderer(songId, file, ImageFormat.PNG);
-            return renderer.renderAndOutput();
+            if(!renderer.renderAndOutput()) {
+                return "";
+            }
+            return file.getPath();
         } catch (Exception e) {
             if(e instanceof NotInitializedException) {
                 throw e;
             }
             log.error("生成歌曲信息失败！");
-            return false;
+            return "";
         }
     }
 }

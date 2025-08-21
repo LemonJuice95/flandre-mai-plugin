@@ -11,18 +11,21 @@ import java.io.*;
 
 @Log4j2
 public class DivingFishB50Generator {
-    public static boolean generate(long qq) {
+    public static String generate(long qq) {
         try {
             File file = new File("./cache/mai_b50/b50_" + qq + ".png");
             JSONObject json = MaiMaiProberService.requestB50(qq);
             B50ImageRenderer renderer = new B50ImageRenderer(qq, json, file, ImageFormat.PNG);
-            return renderer.renderAndOutput();
+            if(!renderer.renderAndOutput()) {
+                return "";
+            }
+            return file.getPath();
         } catch (Exception e) {
             if(e instanceof NotInitializedException) {
                 throw e;
             }
             log.error("生成B50失败！");
-            return false;
+            return "";
         }
     }
 }

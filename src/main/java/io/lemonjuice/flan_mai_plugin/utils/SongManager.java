@@ -1,18 +1,12 @@
-package io.lemonjuice.flan_mai_plugin.song;
+package io.lemonjuice.flan_mai_plugin.utils;
 
 import io.lemonjuice.flan_mai_plugin.exception.NotInitializedException;
+import io.lemonjuice.flan_mai_plugin.model.Song;
 import io.lemonjuice.flan_mai_plugin.service.MaiMaiProberService;
 import lombok.extern.log4j.Log4j2;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import javax.annotation.Nullable;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;

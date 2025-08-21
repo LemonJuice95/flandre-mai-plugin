@@ -4,7 +4,7 @@ import io.lemonjuice.flan_mai_plugin.image.ImageFormat;
 import io.lemonjuice.flan_mai_plugin.refence.Credits;
 import io.lemonjuice.flan_mai_plugin.refence.FileRefs;
 import io.lemonjuice.flan_mai_plugin.service.AvatarService;
-import io.lemonjuice.flan_mai_plugin.song.SongManager;
+import io.lemonjuice.flan_mai_plugin.utils.SongManager;
 import io.lemonjuice.flan_mai_plugin.utils.DxScoreUtils;
 import io.lemonjuice.flan_mai_plugin.utils.StringUtils;
 import io.lemonjuice.flan_mai_plugin.utils.enums.Rank;

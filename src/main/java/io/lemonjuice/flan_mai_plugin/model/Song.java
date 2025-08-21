@@ -1,4 +1,4 @@
-package io.lemonjuice.flan_mai_plugin.song;
+package io.lemonjuice.flan_mai_plugin.model;
 
 import java.util.ArrayList;
 import java.util.List;

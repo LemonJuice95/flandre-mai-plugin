@@ -102,9 +102,11 @@ public class SongInfoRenderer extends OutputtedImageRenderer {
             g.drawString(category, 669 - categoryXOffset, 432);
 
             //谱面类型
-            String typePath = song.type.equals("DX") ? FileRefs.SONG_TYPE_DX : FileRefs.SONG_TYPE_SD;
-            BufferedImage typePic = ImageIO.read(new File(typePath));
-            g.drawImage(typePic, 411, 365, 88, 33, null);
+            if(!song.info.category.equals("宴会場")) {
+                String typePath = song.type.equals("DX") ? FileRefs.SONG_TYPE_DX : FileRefs.SONG_TYPE_SD;
+                BufferedImage typePic = ImageIO.read(new File(typePath));
+                g.drawImage(typePic, 411, 365, 88, 33, null);
+            }
 
             //版本
             String versionPath = FileRefs.PIC_DIR + song.info.from + ".png";

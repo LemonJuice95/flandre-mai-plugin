@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.4.2
+ - 此版本及以后版本的依赖包中将会附带`-sources.jar`
+ - 没有任何在代码层面的修改
+
 ## v0.4.1-hotfix
  - 修复`SongPlayDataRenderer`有`Re:Master`难度的歌曲渲染底部Credits时的颜色问题
 

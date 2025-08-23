@@ -12,7 +12,7 @@ java {
 }
 
 group = 'io.lemonjuice'
-version = '0.4.1-hotfix'
+version = '0.4.2'
 
 publishing {
     publications {

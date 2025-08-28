@@ -2,6 +2,7 @@ package io.lemonjuice.flan_mai_plugin.service;
 
 import io.lemonjuice.flan_mai_plugin.exception.InvalidTokenException;
 import io.lemonjuice.flan_mai_plugin.exception.TokenTooMuchUsageException;
+import io.lemonjuice.flan_mai_plugin.refence.CacheFileRefs;
 import io.lemonjuice.flan_mai_plugin.refence.ConfigRefs;
 import lombok.extern.log4j.Log4j2;
 import org.apache.http.HttpResponse;
@@ -15,10 +16,11 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
-import java.util.Map;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 @Log4j2
 public class MaiMaiProberService {
@@ -182,23 +184,6 @@ public class MaiMaiProberService {
     }
 
     @Nullable
-    public static JSONArray requestSongListRaw() {
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            HttpGet get = new HttpGet(urlWithEndpoint("music_data"));
-            HttpResponse response = httpClient.execute(get);
-            if(response.getStatusLine().getStatusCode() != 200) {
-                log.error("获取歌曲列表失败！疑似网络异常");
-                return null;
-            }
-
-            return new JSONArray(EntityUtils.toString(response.getEntity()));
-        } catch (IOException e) {
-            log.error("获取歌曲列表失败！", e);
-        }
-        return null;
-    }
-
-    @Nullable
     public static JSONArray requestSongAlias() {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpGet get = new HttpGet("https://www.yuzuchan.moe/api/maimaidx/maimaidxalias");
@@ -210,6 +195,71 @@ public class MaiMaiProberService {
             return new JSONArray(new JSONObject(EntityUtils.toString(response.getEntity())).getJSONArray("content"));
         } catch (IOException e) {
             log.error("获取歌曲别名失败！", e);
+        }
+        return null;
+    }
+
+    @Nullable
+    public static JSONArray requestSongListRaw() {
+        File etagFile = new File(CacheFileRefs.SONG_DATA_ETAG);
+        File cacheFile = new File(CacheFileRefs.SONG_DATA_CACHE);
+        String etag = "";
+
+        if(etagFile.exists()) {
+            try (FileInputStream input = new FileInputStream(etagFile);
+                 InputStreamReader reader = new InputStreamReader(input);
+                 BufferedReader bufferedReader = new BufferedReader(reader)) {
+                etag = bufferedReader.readLine();
+            } catch (IOException e) {
+                log.error("获取缓存歌曲信息标识符失败", e);
+            }
+        }
+
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpGet get = new HttpGet(urlWithEndpoint("music_data"));
+            if(!etag.isEmpty()) {
+                get.addHeader("If-None-Match", etag);
+            }
+            HttpResponse response = httpClient.execute(get);
+
+            if(response.getStatusLine().getStatusCode() != 200) { //使用本地缓存
+                boolean netError = response.getStatusLine().getStatusCode() != 304;
+                if(netError) {
+                    log.error("获取歌曲列表失败！疑似网络异常");
+                }
+
+                try (FileInputStream input = new FileInputStream(cacheFile)) {
+                    JSONTokener jsonTokener = new JSONTokener(input);
+                    JSONObject json = new JSONObject(jsonTokener);
+                    return json.getJSONArray("music_data");
+                } catch (Exception e) {
+                    log.error("无法使用本地缓存的歌曲信息", e);
+                }
+
+                if(!netError) {
+                    get = new HttpGet(urlWithEndpoint("music_data"));
+                    response = httpClient.execute(get);
+                } else {
+                    return null;
+                }
+            }
+
+            JSONArray jsonArray = new JSONArray(EntityUtils.toString(response.getEntity()));
+            //输出到本地缓存
+            if(!cacheFile.getParentFile().exists()) cacheFile.getParentFile().mkdirs();
+            JSONObject outputJson = new JSONObject();
+            outputJson.put("music_data", jsonArray);
+            try (FileOutputStream cacheOutput = new FileOutputStream(cacheFile);
+                 FileOutputStream etagOutput = new FileOutputStream(etagFile)) {
+                cacheOutput.write(outputJson.toString().getBytes(StandardCharsets.UTF_8));
+                etagOutput.write(response.getFirstHeader("etag").getValue().getBytes(StandardCharsets.UTF_8));
+            } catch (IOException e) {
+                log.error("缓存歌曲信息失败", e);
+            }
+
+            return jsonArray;
+        } catch (IOException e) {
+            log.error("获取歌曲列表失败！", e);
         }
         return null;
     }

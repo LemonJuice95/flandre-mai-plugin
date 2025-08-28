@@ -1,9 +1,11 @@
 package io.lemonjuice.flan_mai_plugin.image.renderer;
 
 import io.lemonjuice.flan_mai_plugin.image.ImageFormat;
+import io.lemonjuice.flan_mai_plugin.model.PlayRecord;
 import io.lemonjuice.flan_mai_plugin.refence.Credits;
 import io.lemonjuice.flan_mai_plugin.refence.FileRefs;
 import io.lemonjuice.flan_mai_plugin.service.AvatarService;
+import io.lemonjuice.flan_mai_plugin.utils.RecordUtils;
 import io.lemonjuice.flan_mai_plugin.utils.SongManager;
 import io.lemonjuice.flan_mai_plugin.utils.DxScoreUtils;
 import io.lemonjuice.flan_mai_plugin.utils.StringUtils;
@@ -112,17 +114,17 @@ public class B50ImageRenderer extends OutputtedImageRenderer {
             //b35
             JSONArray b35Json = this.b50Data.getJSONObject("charts").getJSONArray("sd");
             for(int i = 0; i < b35Json.length(); i++) {
-                JSONObject songJson = b35Json.getJSONObject(i);
-                drawSong(songJson, g, 16 + 276 * (i % 5), 235 + 114 * (i / 5));
-                b35Rating += songJson.getInt("ra");
+                PlayRecord playRecord = RecordUtils.parsePlayRecord(b35Json.getJSONObject(i));
+                drawSong(playRecord, g, 16 + 276 * (i % 5), 235 + 114 * (i / 5));
+                b35Rating += playRecord.rating;
             }
 
             //b15
             JSONArray b15Json = this.b50Data.getJSONObject("charts").getJSONArray("dx");
             for(int i = 0; i < b15Json.length(); i++) {
-                JSONObject songJson = b15Json.getJSONObject(i);
-                drawSong(songJson, g, 16 + 276 * (i % 5), 1085 + 114 * (i / 5));
-                b15Rating += songJson.getInt("ra");
+                PlayRecord playRecord = RecordUtils.parsePlayRecord(b15Json.getJSONObject(i));
+                drawSong(playRecord, g, 16 + 276 * (i % 5), 1085 + 114 * (i / 5));
+                b15Rating += playRecord.rating;
             }
 
             //Rating计算
@@ -172,8 +174,8 @@ public class B50ImageRenderer extends OutputtedImageRenderer {
         }
     }
 
-    private void drawSong(JSONObject song, Graphics2D g, int x, int y) throws IOException, FontFormatException {
-        int songId = song.getInt("song_id");
+    private void drawSong(PlayRecord playRecord, Graphics2D g, int x, int y) throws IOException, FontFormatException {
+        int songId = playRecord.songId;
         Color fontColor = Color.WHITE;
         Font tbFont;
         Font siyuanFont;
@@ -185,7 +187,7 @@ public class B50ImageRenderer extends OutputtedImageRenderer {
         }
 
         //歌曲背景
-        SongLevelLabel levelLabel = SongLevelLabel.fromString(song.getString("level_label"));
+        SongLevelLabel levelLabel = playRecord.levelLabel;
         if (levelLabel == SongLevelLabel.REMASTER) {
             fontColor = new Color(138, 0, 226, 255);
         }
@@ -198,13 +200,13 @@ public class B50ImageRenderer extends OutputtedImageRenderer {
         g.drawImage(cover, x + 12, y + 12, 75, 75, null);
 
         //谱面类型
-        String type = song.getString("type");
+        String type = playRecord.type;
         String typePicPath = type.equals("DX") ? FileRefs.SONG_TYPE_DX : FileRefs.SONG_TYPE_SD;
         BufferedImage typePic = ImageIO.read(new File(typePicPath));
         g.drawImage(typePic, x + 51, y + 91, 37, 14, null);
 
         //标题
-        String title = song.getString("title");
+        String title = playRecord.title;
         if(StringUtils.getDisplayLength(title) > 18) {
             title = StringUtils.cutByDisplayLength(title, 17);
             title += "...";
@@ -215,21 +217,21 @@ public class B50ImageRenderer extends OutputtedImageRenderer {
         g.drawString(title, x + 93, y + 18);
 
         //成绩
-        String achievements = String.format("%.4f%%", song.getDouble("achievements"));
+        String achievements = String.format("%.4f%%", playRecord.achievements);
         tbFont = tbFont.deriveFont(30.0F);
         g.setFont(tbFont);
         g.setColor(fontColor);
         g.drawString(achievements, x + 93, y + 49);
 
         //评级
-        Rank rank = Rank.fromString(song.getString("rate"));
+        Rank rank = playRecord.rank;
         BufferedImage rankPic = ImageIO.read(new File(rank.getPicPath()));
         g.drawImage(rankPic, x + 92, y + 78, 63, 28, null);
 
         //dx分
-        int dxScore = song.getInt("dxScore");
+        int dxScore = playRecord.dxScore;
         int totalDxScore = SongManager.getSongById(songId)
-                .charts.get(song.getInt("level_index"))
+                .charts.get(playRecord.levelIndex)
                 .notes.stream().mapToInt(Integer::intValue).sum() * 3;
         String dxScoreStr = String.format("%d/%d", dxScore, totalDxScore);
         tbFont = tbFont.deriveFont(15.0F);
@@ -248,14 +250,14 @@ public class B50ImageRenderer extends OutputtedImageRenderer {
         }
 
         //定数 -> 单曲rating
-        float ds = song.getFloat("ds");
-        int songRating = song.getInt("ra");
+        float ds = playRecord.ds;
+        int songRating = playRecord.rating;
         String songRaStr = String.format("%.1f -> %d", ds, songRating);
         g.drawString(songRaStr, x + 93, y + 70);
 
         //FC AP
         try {
-            String iconPath1 = FileRefs.playStatusIcon(song.getString("fc"));
+            String iconPath1 = FileRefs.playStatusIcon(playRecord.fcStatus);
             BufferedImage icon1 = ImageIO.read(new File(iconPath1));
             g.drawImage(icon1, x + 154, y + 77, 34, 34, null);
         } catch (Exception ignored) {
@@ -264,7 +266,7 @@ public class B50ImageRenderer extends OutputtedImageRenderer {
 
         //FS
         try {
-            String iconPath2 = FileRefs.playStatusIcon(song.getString("fs"));
+            String iconPath2 = FileRefs.playStatusIcon(playRecord.syncStatus);
             BufferedImage icon2 = ImageIO.read(new File(iconPath2));
             g.drawImage(icon2, x + 185, y + 77, 34, 34, null);
         } catch (Exception ignored) {

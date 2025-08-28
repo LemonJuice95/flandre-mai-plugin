@@ -1,6 +1,7 @@
 package io.lemonjuice.flan_mai_plugin.image.renderer;
 
 import io.lemonjuice.flan_mai_plugin.image.ImageFormat;
+import io.lemonjuice.flan_mai_plugin.model.PlayRecord;
 import io.lemonjuice.flan_mai_plugin.model.Song;
 import io.lemonjuice.flan_mai_plugin.refence.Credits;
 import io.lemonjuice.flan_mai_plugin.refence.FileRefs;
@@ -27,7 +28,7 @@ public class SongPlayDataRenderer extends OutputtedImageRenderer {
 
     private final long qq;
     private final int songId;
-    private final List<JSONObject> records;
+    private final List<PlayRecord> records;
     private Font siyuan;
     private Font tb;
 
@@ -118,7 +119,7 @@ public class SongPlayDataRenderer extends OutputtedImageRenderer {
         return null;
     }
 
-    private void drawRecord(Graphics2D g, int index, JSONObject record, Song song) throws IOException {
+    private void drawRecord(Graphics2D g, int index, PlayRecord record, Song song) throws IOException {
         int colDistance = 100;
 
         this.drawAchivement(g, index, record, colDistance);
@@ -141,14 +142,14 @@ public class SongPlayDataRenderer extends OutputtedImageRenderer {
         }
     }
 
-    private void drawFCFS(Graphics2D g, int index, JSONObject record, int colDistance) throws IOException {
+    private void drawFCFS(Graphics2D g, int index, PlayRecord record, int colDistance) throws IOException {
         //FC & FS
         BufferedImage fcFsBg = ImageIO.read(new File(FileRefs.FC_FS));
         g.drawImage(fcFsBg, 965, 265 + colDistance * index, null);
 
         //FC
         try {
-            String fcIconPath = FileRefs.playBonus(record.getString("fc"));
+            String fcIconPath = FileRefs.playBonus(record.fcStatus);
             BufferedImage fcIcon = ImageIO.read(new File(fcIconPath));
             g.drawImage(fcIcon, 960, 261 + colDistance * index, 65, 65, null);
         } catch (Exception ignored) {
@@ -157,7 +158,7 @@ public class SongPlayDataRenderer extends OutputtedImageRenderer {
 
         //FS
         try {
-            String fsIconPath = FileRefs.playBonus(record.getString("fs"));
+            String fsIconPath = FileRefs.playBonus(record.syncStatus);
             BufferedImage fsIcon = ImageIO.read(new File(fsIconPath));
             g.drawImage(fsIcon, 1025, 261 + colDistance * index, 65, 65, null);
         } catch (Exception ignored) {
@@ -167,12 +168,10 @@ public class SongPlayDataRenderer extends OutputtedImageRenderer {
 
     private void drawRecords(Graphics2D g, Song song, List<Boolean> played) throws IOException {
         //记录
-        for(JSONObject record : this.records) {
-            if(record.has("level_index")) {
-                int levelIndex = record.getInt("level_index");
-                this.drawRecord(g, levelIndex, record, song);
-                played.set(levelIndex, true);
-            }
+        for(PlayRecord record : this.records) {
+            int levelIndex = record.levelIndex;
+            this.drawRecord(g, levelIndex, record, song);
+            played.set(levelIndex, true);
         }
     }
 
@@ -257,9 +256,9 @@ public class SongPlayDataRenderer extends OutputtedImageRenderer {
         g.drawImage(logo, 0, 34, 249, 120, null);
     }
 
-    private void drawDxScore(Graphics2D g, int index, JSONObject record, Song song, int colDistance) throws IOException {
+    private void drawDxScore(Graphics2D g, int index, PlayRecord record, Song song, int colDistance) throws IOException {
         //dx分
-        int dxScore = record.getInt("dxScore");
+        int dxScore = record.dxScore;
         int totalDxScore = song.charts.get(index).notes.stream().mapToInt(Integer::intValue).sum() * 3;
         String dxScoreStr = String.format("%d/%d", dxScore, totalDxScore);
         this.tb = this.tb.deriveFont(13.0F);
@@ -279,13 +278,13 @@ public class SongPlayDataRenderer extends OutputtedImageRenderer {
         }
     }
 
-    private void drawRating(Graphics2D g, int index, JSONObject record, int colDistance) throws IOException {
+    private void drawRating(Graphics2D g, int index, PlayRecord record, int colDistance) throws IOException {
         //rating背景
         BufferedImage raDX = ImageIO.read(new File(FileRefs.RA_DX));
         g.drawImage(raDX, 850, 272 + colDistance * index, null);
 
         //单曲rating
-        String ratingStr = String.valueOf(record.getInt("ra"));
+        String ratingStr = String.valueOf(record.rating);
         this.tb = this.tb.deriveFont(18.0F);
         g.setFont(this.tb);
         FontMetrics raMetric = g.getFontMetrics();
@@ -293,16 +292,16 @@ public class SongPlayDataRenderer extends OutputtedImageRenderer {
         g.drawString(ratingStr, 915 - raXOffset, 290 + colDistance * index);
     }
 
-    private void drawRank(Graphics2D g, int index, JSONObject record, int colDistance) throws IOException {
+    private void drawRank(Graphics2D g, int index, PlayRecord record, int colDistance) throws IOException {
         //评级
-        Rank rank = Rank.fromString(record.getString("rate"));
+        Rank rank = record.rank;
         BufferedImage rankPic = ImageIO.read(new File(rank.getPicPath()));
         g.drawImage(rankPic, 737, 272 + colDistance * index, 100, 45, null);
     }
 
-    private void drawAchivement(Graphics2D g, int index, JSONObject record, int colDistance) {
+    private void drawAchivement(Graphics2D g, int index, PlayRecord record, int colDistance) {
         //成绩
-        String achievements = String.format("%.4f%%", record.getFloat("achievements"));
+        String achievements = String.format("%.4f%%", record.achievements);
         this.tb = this.tb.deriveFont(42.0F);
         g.setFont(this.tb);
         g.setColor(textColor);

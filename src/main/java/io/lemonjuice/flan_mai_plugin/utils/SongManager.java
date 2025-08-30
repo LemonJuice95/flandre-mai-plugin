@@ -13,13 +13,20 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Log4j2
 public class SongManager {
     private static final ConcurrentHashMap<Integer, Song> ID_MAP = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, List<Song>> TITLE_MAP = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, List<Integer>> PLATE_REQUIREMENTS = new ConcurrentHashMap<>(); //使用歌曲id
 
     private static final AtomicBoolean initialized = new AtomicBoolean(false);
+
+    public static List<Integer> getPlateRequirement(String version) {
+        checkInitializedOrThrow();
+        return PLATE_REQUIREMENTS.get(version);
+    }
 
     public static List<Song> searchSong(String name) {
         checkInitializedOrThrow();
@@ -66,13 +73,10 @@ public class SongManager {
 
     public static List<Song> getSongByAlias(String alias) {
         checkInitializedOrThrow();
-        List<Song> result = new ArrayList<>();
-        for(Song s : ID_MAP.values()) {
-            if(s.alias.contains(alias)) {
-                result.add(s);
-            }
-        }
-        return result;
+        return ID_MAP.values()
+                .stream()
+                .filter(s -> s.alias.contains(alias))
+                .collect(Collectors.toList());
     }
 
     public static boolean isInitialized() {
@@ -87,7 +91,36 @@ public class SongManager {
         initialized.set(false);
         ID_MAP.clear();
         TITLE_MAP.clear();
+        PLATE_REQUIREMENTS.clear();
 
+        initMusicData();
+        initPlateRequirement();
+
+        initialized.set(true);
+    }
+
+    private static void initPlateRequirement() {
+        JSONObject requirementJson = MaiMaiProberService.requestPlateRequirement();
+        for(String ver : requirementJson.keySet()) {
+            JSONArray jsonArray = requirementJson.getJSONArray(ver);
+            List<Integer> songIds = new ArrayList<>();
+            for(int i = 0; i < jsonArray.length(); i++) {
+                songIds.add(jsonArray.getInt(i));
+            }
+            if(ver.contains("&")) {
+                for(String eachVer : ver.split("&")) {
+                    if(eachVer.equals("华")) {
+                        eachVer = "華";
+                    }
+                    PLATE_REQUIREMENTS.put(eachVer, songIds);
+                }
+            } else {
+                PLATE_REQUIREMENTS.put(ver, songIds);
+            }
+        }
+    }
+
+    private static void initMusicData() {
         JSONArray songsJson = MaiMaiProberService.requestSongListRaw();
         JSONObject chartStats = MaiMaiProberService.requestChartStats();
         for(int i = 0; i < songsJson.length(); i++) {
@@ -118,8 +151,6 @@ public class SongManager {
                 song.alias.add(songAlias.getString(j));
             }
         }
-
-        initialized.set(true);
     }
 
 

@@ -57,6 +57,18 @@ public class FileRefs {
     public static final String SONG_INFO_BG = picDir("song_bg.png");
     public static final String PLAY_DATA_BG = picDir("info_bg.png");
 
+    public static final String AURORA = picDir("aurora.png");
+    public static final String SHINES = picDir("bg_shines.png");
+    public static final String RAINBOW = picDir("rainbow.png");
+    public static final String RAINBOW_BOTTOM = picDir("rainbow_bottom.png");
+    public static final String DOT_MATRIX = picDir("pattern.png");
+    public static final String CREDITS_BG = picDir("design.png");
+
+    public static final String PLATE_PROGRESS_BG = picDir("plate_num.png");
+    public static final String TABLE_LEVEL_BG = picDir("UI_CMN_Chara_Level_S_01.png");
+    public static final String SONG_COMPLETED_BG = picDir("complete_bg_2.png");
+    public static final String SONG_UNCOMPLETED_BG = picDir("unfinished_bg_2.png");
+
     public static final String FC_FS = picDir("fcfs.png");
     public static final String RA_DX = picDir("ra-dx.png");
 
@@ -72,6 +84,13 @@ public class FileRefs {
         put("东方Project", "touhou");
         put("宴会場", "utage");
     }};
+
+    public static String songCompletedIcon(int levelIndex) {
+        if(levelIndex < 0 || levelIndex > 3) {
+            throw new IllegalArgumentException("index must be in 0-3, but got: " + levelIndex);
+        }
+        return picDir(String.format("t-%d.png", levelIndex));
+    }
 
     public static String infoCategoryByRaw(String infoRaw) throws NullPointerException {
         String category = SONG_CATEGORY_MAP.get(infoRaw);

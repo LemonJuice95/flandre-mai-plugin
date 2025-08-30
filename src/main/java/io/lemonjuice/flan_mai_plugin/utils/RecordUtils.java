@@ -5,6 +5,7 @@ import io.lemonjuice.flan_mai_plugin.service.MaiMaiProberService;
 import io.lemonjuice.flan_mai_plugin.utils.enums.Rank;
 import io.lemonjuice.flan_mai_plugin.utils.enums.SongLevelLabel;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -29,15 +30,30 @@ public class RecordUtils {
         return result;
     }
 
+    public static PlayRecord parsePlateRecord(JSONObject json) {
+        PlayRecord result = new PlayRecord();
+
+        result.achievements = json.getFloat("achievements");
+        result.fcStatus = json.getString("fc");
+        result.songId = json.getInt("id");
+        result.level = json.getString("level");
+        result.levelIndex = json.getInt("level_index");
+        result.title = json.getString("title");
+        result.type = json.getString("type");
+        result.rank = Rank.fromAchievement(result.achievements);
+
+        return result;
+    }
+
     public static PlayRecord parsePlayRecord(JSONObject json) {
         PlayRecord result = new PlayRecord();
 
         result.achievements = json.getFloat("achievements");
         result.level = json.getString("level");
-        result.dxScore = json.getInt("dxScore");
+        result.dxScore = json.optInt("dxScore", 0);
         try {
             result.levelLabel = SongLevelLabel.fromString(json.getString("level_label"));
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | JSONException e) {
             result.levelLabel = SongLevelLabel.BASIC;
         }
         result.title = json.getString("title");

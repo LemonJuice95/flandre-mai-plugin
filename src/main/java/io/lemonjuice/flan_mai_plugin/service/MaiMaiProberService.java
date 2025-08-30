@@ -4,6 +4,7 @@ import io.lemonjuice.flan_mai_plugin.exception.InvalidTokenException;
 import io.lemonjuice.flan_mai_plugin.exception.TokenTooMuchUsageException;
 import io.lemonjuice.flan_mai_plugin.refence.CacheFileRefs;
 import io.lemonjuice.flan_mai_plugin.refence.ConfigRefs;
+import io.lemonjuice.flan_mai_plugin.utils.enums.MaiVersion;
 import lombok.extern.log4j.Log4j2;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -21,6 +22,7 @@ import org.json.JSONTokener;
 import javax.annotation.Nullable;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @Log4j2
 public class MaiMaiProberService {
@@ -166,21 +168,41 @@ public class MaiMaiProberService {
         return null;
     }
 
-    @Nullable
+    public static JSONArray requestPlateProgress(long qq, List<String> versions) {
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpPost post = new HttpPost(urlWithEndpoint("query/plate"));
+            JSONObject body = new JSONObject();
+            body.put("qq", qq);
+            body.put("version", versions);
+            post.setEntity(new StringEntity(body.toString(), ContentType.APPLICATION_JSON));
+            HttpResponse response = httpClient.execute(post);
+            if(response.getStatusLine().getStatusCode() != 200) {
+                log.error("获取牌子完成进度失败！");
+                log.error(EntityUtils.toString(response.getEntity()));
+                return null;
+            }
+            JSONObject responseJson = new JSONObject(EntityUtils.toString(response.getEntity()));
+            return responseJson.getJSONArray("verlist");
+        } catch (IOException e) {
+            log.error("获取牌子完成进度失败！", e);
+        }
+        return null;
+    }
+
     public static JSONObject requestChartStats() {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpGet get = new HttpGet(urlWithEndpoint("chart_stats"));
             HttpResponse response = httpClient.execute(get);
             if(response.getStatusLine().getStatusCode() != 200) {
                 log.error("获取谱面信息失败！疑似网络异常");
-                return null;
+                return new JSONObject();
             }
             JSONObject outer = new JSONObject(EntityUtils.toString(response.getEntity()));
             return outer.getJSONObject("charts");
         } catch (IOException e) {
             log.error("获取谱面信息失败！", e);
         }
-        return null;
+        return new JSONObject();
     }
 
     @Nullable
@@ -190,16 +212,30 @@ public class MaiMaiProberService {
             HttpResponse response = httpClient.execute(get);
             if(response.getStatusLine().getStatusCode() != 200) {
                 log.error("获取歌曲别名失败！疑似网络异常");
-                return null;
+                return new JSONArray();
             }
-            return new JSONArray(new JSONObject(EntityUtils.toString(response.getEntity())).getJSONArray("content"));
+            return new JSONObject(EntityUtils.toString(response.getEntity())).getJSONArray("content");
         } catch (IOException e) {
             log.error("获取歌曲别名失败！", e);
         }
-        return null;
+        return new JSONArray();
     }
 
-    @Nullable
+    public static JSONObject requestPlateRequirement() {
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpGet get = new HttpGet("https://www.yuzuchan.moe/api/maimaidx/maimaidxplate");
+            HttpResponse response = httpClient.execute(get);
+            if(response.getStatusLine().getStatusCode() != 200) {
+                log.error("获取牌子需求失败！疑似网络异常");
+                return new JSONObject();
+            }
+            return new JSONObject(EntityUtils.toString(response.getEntity())).getJSONObject("content");
+        } catch (IOException e) {
+            log.error("获取牌子需求失败！", e);
+        }
+        return new JSONObject();
+    }
+
     public static JSONArray requestSongListRaw() {
         File etagFile = new File(CacheFileRefs.SONG_DATA_ETAG);
         File cacheFile = new File(CacheFileRefs.SONG_DATA_CACHE);
@@ -240,7 +276,7 @@ public class MaiMaiProberService {
                     get = new HttpGet(urlWithEndpoint("music_data"));
                     response = httpClient.execute(get);
                 } else {
-                    return null;
+                    return new JSONArray();
                 }
             }
 
@@ -261,7 +297,7 @@ public class MaiMaiProberService {
         } catch (IOException e) {
             log.error("获取歌曲列表失败！", e);
         }
-        return null;
+        return new JSONArray();
     }
 
     private static String urlWithEndpoint(String suffix) {

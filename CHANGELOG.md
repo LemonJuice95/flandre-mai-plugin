@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.5.1
+ - 为`MaiVersion`类的`matchingNames`添加getter方法
+
 ## v0.5.0
  - 为游玩记录提供了模型类
  - 新增查询牌子完成表的功能

@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.5.3
+ - 修正完成表中一个等级歌曲数目刚好为10的倍数时出现的空行问题
+
 ## v0.5.2
  - 修正`RecordUtils`中`parsePlateRecord`方法返回的记录没有同步状态的问题
 

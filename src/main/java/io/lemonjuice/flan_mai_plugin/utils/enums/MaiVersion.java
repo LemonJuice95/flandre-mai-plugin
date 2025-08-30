@@ -34,7 +34,7 @@ public enum MaiVersion {
     BUDDIES_PLUS("宴", "宴", "maimai でらっくす BUDDiES"),
     PRISM("镜", "镜", "maimai でらっくす PRiSM");
 
-
+    @Getter
     private final String matchingNames;
     @Getter
     private final String mappingName;

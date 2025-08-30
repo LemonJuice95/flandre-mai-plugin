@@ -9,6 +9,7 @@ public class Song {
     public String type;
     public List<Float> ds = new ArrayList<>();
     public List<String> level = new ArrayList<>();
+    public String maxLevel;
     public List<Integer> cids = new ArrayList<>();
     public List<Chart> charts = new ArrayList<>();
     public Info info;

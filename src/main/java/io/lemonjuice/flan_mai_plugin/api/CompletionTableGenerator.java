@@ -4,6 +4,7 @@ import io.lemonjuice.flan_mai_plugin.exception.NotInitializedException;
 import io.lemonjuice.flan_mai_plugin.image.ImageFormat;
 import io.lemonjuice.flan_mai_plugin.image.renderer.completion_table.PlateCompletionTableRenderer;
 import io.lemonjuice.flan_mai_plugin.model.PlayRecord;
+import io.lemonjuice.flan_mai_plugin.refence.FileRefs;
 import io.lemonjuice.flan_mai_plugin.service.MaiMaiProberService;
 import io.lemonjuice.flan_mai_plugin.utils.RecordUtils;
 import io.lemonjuice.flan_mai_plugin.utils.SongManager;
@@ -30,6 +31,10 @@ public class CompletionTableGenerator {
             plateName = plateName.replace("极", "極");
             if(!versions.isEmpty())
                 plateName = versions.getFirst().getMappingName() + plateName.substring(1);
+
+            if(!new File(FileRefs.PLATE_DIR + plateName + ".png").exists()) {
+                return PLATE_NOT_FOUND;
+            }
 
             for (MaiVersion ver : versions) {
                 String verName = ver.getMappingName();

@@ -14,7 +14,10 @@ import org.json.JSONArray;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 //TODO 完成api方法
 @Log4j2
@@ -26,7 +29,7 @@ public class CompletionTableGenerator {
             File output = new File("./cache/mai_completion_table/" + plateName + "_" + qq + ".png");
 
             List<MaiVersion> versions = MaiVersion.matchVersion(String.valueOf(plateName.charAt(0)));
-            List<Integer> requirement = new ArrayList<>();
+            Set<Integer> requirementRaw = new HashSet<>();
 
             plateName = plateName.replace("极", "極");
             if(!versions.isEmpty())
@@ -38,7 +41,7 @@ public class CompletionTableGenerator {
 
             for (MaiVersion ver : versions) {
                 String verName = ver.getMappingName();
-                requirement.addAll(SongManager.getPlateRequirement(verName));
+                requirementRaw.addAll(SongManager.getPlateRequirement(verName));
             }
 
             List<String> versionNames = versions.stream().map(MaiVersion::getEnglishName).toList();
@@ -47,6 +50,8 @@ public class CompletionTableGenerator {
             for(int i = 0; i < recordsJson.length(); i++) {
                 records.add(RecordUtils.parsePlateRecord(recordsJson.getJSONObject(i)));
             }
+
+            List<Integer> requirement = new ArrayList<>(requirementRaw);
 
             PlateCompletionTableRenderer renderer = new PlateCompletionTableRenderer(plateName, requirement, records, output, ImageFormat.PNG);
             if(!renderer.renderAndOutput()) {

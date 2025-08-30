@@ -172,6 +172,9 @@ public class PlateCompletionTableRenderer extends CompletionTableRenderer {
                     x += 115;
                 }
             }
+            if(lineCounter == 0) {
+                y -= 115;
+            }
 
             y += 130;
         }

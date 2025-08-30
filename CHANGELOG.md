@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.5.2
+ - 修正`RecordUtils`中`parsePlateRecord`方法返回的记录没有同步状态的问题
+
 ## v0.5.1
  - 为`MaiVersion`类的`matchingNames`添加getter方法
 

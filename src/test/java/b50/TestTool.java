@@ -36,8 +36,8 @@ public class TestTool {
     public void generatePlateCompleteTable() {
         ConfigRefs.init();
         SongManager.init();
-        CompletionTableGenerator.generateWithPlates(1582017385, "华将");
-        CompletionTableGenerator.generateWithPlates(1582017385, "煌将");
-        CompletionTableGenerator.generateWithPlates(1582017385, "桃极");
+        CompletionTableGenerator.generateWithPlates(1582017385, "晓舞舞");
+//        CompletionTableGenerator.generateWithPlates(1582017385, "煌将");
+//        CompletionTableGenerator.generateWithPlates(1582017385, "桃极");
     }
 }

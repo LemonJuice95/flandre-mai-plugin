@@ -35,6 +35,7 @@ public class RecordUtils {
 
         result.achievements = json.getFloat("achievements");
         result.fcStatus = json.getString("fc");
+        result.syncStatus = json.getString("fs");
         result.songId = json.getInt("id");
         result.level = json.getString("level");
         result.levelIndex = json.getInt("level_index");

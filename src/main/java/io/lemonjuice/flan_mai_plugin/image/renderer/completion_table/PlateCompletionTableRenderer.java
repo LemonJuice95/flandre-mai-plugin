@@ -30,8 +30,8 @@ public class PlateCompletionTableRenderer extends CompletionTableRenderer {
     private final String plateName;
 
     protected final Map<String, List<Song>> songMap = new TreeMap<>((k1, k2) -> {
-        String k1_ = k1.replace("+", ".5");
-        String k2_ = k2.replace("+", ".5");
+        String k1_ = k1.replace("+", ".5").replace("?", "");
+        String k2_ = k2.replace("+", ".5").replace("?", "");
         return Float.valueOf(k2_).compareTo(Float.valueOf(k1_));
     }); //按倒序排序
     protected final Map<Integer, List<PlayRecord>> records = new HashMap<>();

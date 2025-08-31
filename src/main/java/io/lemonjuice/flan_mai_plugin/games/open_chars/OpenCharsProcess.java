@@ -55,7 +55,7 @@ public class OpenCharsProcess {
                 }
                 boolean flag = true;
                 for(char ch : this.songs.get(i).title.toCharArray()) {
-                    if(!this.openedChars.contains(ch)) {
+                    if(!this.openedChars.contains(ch) || ch == ' ') {
                         flag = false;
                         break;
                     }
@@ -105,7 +105,7 @@ public class OpenCharsProcess {
 
     public synchronized boolean guessSong(String name, int index) throws IndexOutOfBoundsException {
         List<Song> matchedSongs = SongManager.searchSong(name);
-        if(matchedSongs.contains(this.songs.get(index)) && !this.isSongUnknown(index)) {
+        if(matchedSongs.contains(this.songs.get(index)) && this.isSongUnknown(index)) {
             this.completedIndexes.add(index);
             this.remaining--;
             return true;

@@ -50,12 +50,12 @@ public class OpenCharsProcess {
         boolean result = this.openedChars.add(c);
         if(result) {
             for(int i = 0; i < this.songs.size(); i++) {
-                if(this.completedIndexes.contains(i) || this.failedIndexes.contains(i)) {
+                if(!this.isSongUnknown(i)) {
                     continue;
                 }
                 boolean flag = true;
                 for(char ch : this.songs.get(i).title.toCharArray()) {
-                    if(!this.openedChars.contains(ch) || ch == ' ') {
+                    if(!this.openedChars.contains(ch) && ch != ' ') {
                         flag = false;
                         break;
                     }

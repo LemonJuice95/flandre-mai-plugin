@@ -1,8 +1,10 @@
 package io.lemonjuice.flan_mai_plugin.games.open_chars;
 
 import io.lemonjuice.flan_mai_plugin.exception.NotInitializedException;
+import io.lemonjuice.flan_mai_plugin.games.condition.SongFilterCondition;
 import io.lemonjuice.flan_mai_plugin.model.Song;
 import io.lemonjuice.flan_mai_plugin.utils.SongManager;
+import lombok.Getter;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -30,6 +32,7 @@ public class OpenCharsProcess {
         }
     }
 
+    @Getter
     private final List<Song> songs = new ArrayList<>();
     private final Set<Character> openedChars = new HashSet<>();
     private final Set<Integer> failedIndexes = new HashSet<>();
@@ -37,30 +40,37 @@ public class OpenCharsProcess {
     private int remaining;
 
     public OpenCharsProcess(int songNum) {
+        this(songNum, new ArrayList<>());
+    }
+
+    public OpenCharsProcess(int songNum, List<SongFilterCondition> conditions) {
         checkInitializedOrThrow();
 
-        this.remaining = Math.min(songNum, LEGAL_SONGS.size());
-        ThreadLocalRandom.current().ints(0, LEGAL_SONGS.size())
+        List<Song> songPool = LEGAL_SONGS.stream()
+                .filter(s -> conditions.stream().allMatch(c -> c.matches(s)))
+                .toList();
+        this.remaining = Math.min(songNum, songPool.size());
+        ThreadLocalRandom.current().ints(0, songPool.size())
                 .distinct()
-                .limit(Math.min(songNum, LEGAL_SONGS.size()))
-                .forEach((i) -> songs.add(LEGAL_SONGS.get(i)));
+                .limit(Math.min(songNum, songPool.size()))
+                .forEach((i) -> songs.add(songPool.get(i)));
     }
 
     public synchronized boolean openChar(char c) {
         boolean result = this.openedChars.add(c);
-        if(result) {
-            for(int i = 0; i < this.songs.size(); i++) {
-                if(!this.isSongUnknown(i)) {
+        if (result) {
+            for (int i = 0; i < this.songs.size(); i++) {
+                if (!this.isSongUnknown(i)) {
                     continue;
                 }
                 boolean flag = true;
-                for(char ch : this.songs.get(i).title.toCharArray()) {
-                    if(!this.openedChars.contains(ch) && ch != ' ') {
+                for (char ch : this.songs.get(i).title.toCharArray()) {
+                    if (!this.openedChars.contains(ch) && ch != ' ') {
                         flag = false;
                         break;
                     }
                 }
-                if(flag) {
+                if (flag) {
                     this.failedIndexes.add(i);
                     this.remaining--;
                 }

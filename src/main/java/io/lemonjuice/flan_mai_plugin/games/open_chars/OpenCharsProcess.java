@@ -40,13 +40,13 @@ public class OpenCharsProcess {
         checkInitializedOrThrow();
 
         this.remaining = Math.min(songNum, LEGAL_SONGS.size());
-        ThreadLocalRandom.current().ints(LEGAL_SONGS.size())
+        ThreadLocalRandom.current().ints(0, LEGAL_SONGS.size())
                 .distinct()
                 .limit(Math.min(songNum, LEGAL_SONGS.size()))
                 .forEach((i) -> songs.add(LEGAL_SONGS.get(i)));
     }
 
-    public boolean openChar(char c) {
+    public synchronized boolean openChar(char c) {
         boolean result = this.openedChars.add(c);
         if(result) {
             for(int i = 0; i < this.songs.size(); i++) {
@@ -99,9 +99,13 @@ public class OpenCharsProcess {
         return result.toString().trim();
     }
 
-    public boolean guessSong(String name, int index) {
+    public boolean isSongUnknown(int index) throws IndexOutOfBoundsException {
+        return !this.failedIndexes.contains(index) && !this.completedIndexes.contains(index);
+    }
+
+    public synchronized boolean guessSong(String name, int index) throws IndexOutOfBoundsException {
         List<Song> matchedSongs = SongManager.searchSong(name);
-        if(matchedSongs.contains(this.songs.get(index)) && !this.failedIndexes.contains(index)) {
+        if(matchedSongs.contains(this.songs.get(index)) && !this.isSongUnknown(index)) {
             this.completedIndexes.add(index);
             this.remaining--;
             return true;

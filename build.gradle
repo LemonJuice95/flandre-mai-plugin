@@ -10,6 +10,7 @@ java {
         languageVersion = JavaLanguageVersion.of(21)
     }
     withSourcesJar()
+    withJavadocJar()
 }
 
 group = 'io.github.lemonjuice95'

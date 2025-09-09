@@ -11,28 +11,76 @@ java {
     withSourcesJar()
 }
 
-group = 'io.lemonjuice'
-version = '0.6.0'
+group = 'io.github.lemonjuice95'
+version = '0.7.0'
+
+jreleaser {
+    signing {
+        active = 'ALWAYS'
+        armored = true
+        mode = 'FILE'
+        publicKey = rootProject.findProperty("gpg.publicKey")
+        secretKey = rootProject.findProperty("gpg.secretKey")
+        passphrase = rootProject.findProperty("gpg.passphrase")
+    }
+
+    deploy {
+        maven {
+            mavenCentral {
+                sonatype {
+                    active = 'ALWAYS'
+                    url = 'https://central.sonatype.com/api/v1/publisher'
+                    stagingRepository('build/staging-deploy')
+
+                    username = rootProject.findProperty("gpg.mavenUsername")
+                    password = rootProject.findProperty("gpg.mavenPassword")
+                }
+            }
+        }
+    }
+}
 
 publishing {
     publications {
-        maven(MavenPublication) {
-            groupId = 'io.lemonjuice'
-            artifactId = 'flan-mai-plugin'
-            version = project.version;
+        maven (MavenPublication) {
+            groupId = 'io.github.lemonjuice95'
+            artifactId = 'flandre-mai-plugin'
+            version = project.version
 
             from components.java
+
+            pom {
+                name = 'Flandre Mai Plugin'
+                description = 'A plugin of MaiMaiDX related functions for io.github.lemonjuice95:flandre-bot-framework'
+                url = 'https://github.com/LemonJuice95/flandre-mai-plugin'
+
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://opensource.org/license/MIT'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'lemonjuice95'
+                        name = 'LemonJuice95'
+                        email = '1582017385@qq.com'
+                    }
+                }
+
+                scm {
+                    connection = 'scm:git:git://github.com/LemonJuice95/flandre-mai-plugin'
+                    developerConnection = 'scm:git:ssh://github.com/LemonJuice95/flandre-mai-plugin'
+                    url = 'https://github.com/LemonJuice95/flandre-mai-plugin'
+                }
+            }
         }
     }
 
     repositories {
         maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/LemonJuice95/flan-mai-plugin")
-            credentials {
-                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
-                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
-            }
+            url = layout.buildDirectory.dir('staging-deploy')
         }
     }
 }
@@ -48,13 +96,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.36'
     annotationProcessor 'org.projectlombok:lombok:1.18.36'
 
-    //log4j
-    implementation 'org.apache.logging.log4j:log4j-api:2.25.1'
-    implementation 'org.apache.logging.log4j:log4j-core:2.25.1'
-    implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.25.1'
-
-    //Json
-    implementation 'org.json:json:20250517'
+    compileOnly 'io.github.lemonjuice95:flandre-bot-framework:0.4.1'
 
     //Http Request
     implementation 'org.apache.httpcomponents:httpclient:4.5.14'

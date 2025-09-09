@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.7.0
+ - 使用Flandre-Bot-FrameWork作为框架
+
 ## v0.6.0
  - 增加歌曲筛选功能
 

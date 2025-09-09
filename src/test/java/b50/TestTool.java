@@ -4,9 +4,12 @@ import io.lemonjuice.flan_mai_plugin.api.CompletionTableGenerator;
 import io.lemonjuice.flan_mai_plugin.api.DivingFishB50Generator;
 import io.lemonjuice.flan_mai_plugin.api.SongInfoGenerator;
 import io.lemonjuice.flan_mai_plugin.api.SongPlayDataGenerator;
+import io.lemonjuice.flan_mai_plugin.model.Song;
 import io.lemonjuice.flan_mai_plugin.refence.ConfigRefs;
 import io.lemonjuice.flan_mai_plugin.utils.SongManager;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 public class TestTool {
     @Test
@@ -39,5 +42,11 @@ public class TestTool {
         CompletionTableGenerator.generateWithPlates(1582017385, "真极");
 //        CompletionTableGenerator.generateWithPlates(1582017385, "煌将");
 //        CompletionTableGenerator.generateWithPlates(1582017385, "桃极");
+    }
+
+    @Test
+    public void testLegalSong() {
+        SongManager.init();
+        List<Song> songs = SongManager.searchSong("超天酱");
     }
 }

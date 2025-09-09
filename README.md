@@ -1,11 +1,11 @@
-# flan-mai-plugin
+# Flandre-Mai-Plugin
 
 [![java21](https://img.shields.io/badge/Java-21-blue.svg)](https://www.oracle.com/java/technologies/downloads/#java21)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 本项目移植自 [Yuri-YuzuChaN/maimaiDX](https://github.com/Yuri-YuzuChaN/maimaiDX/)
 
-基于java的舞萌查询框架
+基于[Flandre-Bot-FrameWork](https://github.com/LemonJuice95/flandre-bot-framework)的舞萌查询框架
 
 使用前请前往[原项目](https://github.com/Yuri-YuzuChaN/maimaiDX/)下载资源文件（位于原项目的README中）
 

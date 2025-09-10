@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.8.0
+ - 适配新版本插件加载器
+
 ## v0.7.0
  - 使用Flandre-Bot-FrameWork作为框架
 

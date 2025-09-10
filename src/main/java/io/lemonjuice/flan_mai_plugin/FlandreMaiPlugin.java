@@ -4,13 +4,24 @@ import com.google.common.eventbus.Subscribe;
 import io.lemonjuice.flan_mai_plugin.refence.ConfigRefs;
 import io.lemonjuice.flan_mai_plugin.utils.SongManager;
 import io.lemonjuice.flandre_bot_framework.event.annotation.EventSubscriber;
-import io.lemonjuice.flandre_bot_framework.event.meta.PluginLoadEvent;
+import io.lemonjuice.flandre_bot_framework.event.meta.PluginRegisterEvent;
+import io.lemonjuice.flandre_bot_framework.plugins.BotPlugin;
 
 @EventSubscriber
-public class FlandreMaiPlugin {
-    @Subscribe
-    public void loadPlugin(PluginLoadEvent event) {
+public class FlandreMaiPlugin implements BotPlugin {
+    @Override
+    public void load() {
         ConfigRefs.init();
         Thread.startVirtualThread(SongManager::init);
+    }
+
+    @Override
+    public String getName() {
+        return "Flandre MaiMai Plugin";
+    }
+
+    @Subscribe
+    public void registerPlugin(PluginRegisterEvent event) {
+        event.register(this);
     }
 }

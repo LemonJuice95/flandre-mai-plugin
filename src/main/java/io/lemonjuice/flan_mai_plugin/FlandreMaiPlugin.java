@@ -1,9 +1,9 @@
 package io.lemonjuice.flan_mai_plugin;
 
-import com.google.common.eventbus.Subscribe;
 import io.lemonjuice.flan_mai_plugin.refence.ConfigRefs;
 import io.lemonjuice.flan_mai_plugin.utils.SongManager;
 import io.lemonjuice.flandre_bot_framework.event.annotation.EventSubscriber;
+import io.lemonjuice.flandre_bot_framework.event.annotation.SubscribeEvent;
 import io.lemonjuice.flandre_bot_framework.event.meta.PluginRegisterEvent;
 import io.lemonjuice.flandre_bot_framework.plugins.BotPlugin;
 
@@ -20,7 +20,7 @@ public class FlandreMaiPlugin implements BotPlugin {
         return "Flandre MaiMai Plugin";
     }
 
-    @Subscribe
+    @SubscribeEvent
     public void registerPlugin(PluginRegisterEvent event) {
         event.register(this);
     }

@@ -24,7 +24,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 @Log4j2
-public class B50ImageRenderer extends OutputtedImageRenderer {
+public class B50ImageRenderer extends ImageRenderer {
     private static final Color[] idColors = {
             new Color(129, 217, 85, 255),
             new Color(245, 189, 21, 255),
@@ -36,8 +36,7 @@ public class B50ImageRenderer extends OutputtedImageRenderer {
     private final long qq;
     private final JSONObject b50Data;
 
-    public B50ImageRenderer(long qq, JSONObject b50Data, File output, ImageFormat format) {
-        super(output, format);
+    public B50ImageRenderer(long qq, JSONObject b50Data) {
         this.qq = qq;
         this.b50Data = b50Data;
     }

@@ -17,11 +17,10 @@ import java.io.File;
 import java.io.FileInputStream;
 
 @Log4j2
-public class SongInfoRenderer extends OutputtedImageRenderer {
+public class SongInfoRenderer extends ImageRenderer {
     private final int songId;
 
-    public SongInfoRenderer(int songId, File output, ImageFormat format) {
-        super(output, format);
+    public SongInfoRenderer(int songId) {
         this.songId = songId;
     }
 

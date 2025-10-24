@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.10.0
+ - 图片api现在直接返回BufferedImage
+
 ## v0.9.0
  - 使用新的EventBus实现（框架版本v0.8.0+）
 

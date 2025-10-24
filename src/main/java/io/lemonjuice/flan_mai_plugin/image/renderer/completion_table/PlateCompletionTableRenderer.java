@@ -38,8 +38,8 @@ public class PlateCompletionTableRenderer extends CompletionTableRenderer {
     private int completedNum = 0;
     private int[] completedNumPerLevel = {0, 0, 0, 0};
 
-    public PlateCompletionTableRenderer(String plateName, List<Integer> requirement, List<PlayRecord> records, File output, ImageFormat format) {
-        super(PlanList.getPlan(plateName.substring(1)), output, format);
+    public PlateCompletionTableRenderer(String plateName, List<Integer> requirement, List<PlayRecord> records) {
+        super(PlanList.getPlan(plateName.substring(1)));
         this.plateName = plateName;
 
         records.forEach((r) -> {

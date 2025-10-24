@@ -1,7 +1,7 @@
 package io.lemonjuice.flan_mai_plugin.image.renderer.completion_table;
 
 import io.lemonjuice.flan_mai_plugin.image.ImageFormat;
-import io.lemonjuice.flan_mai_plugin.image.renderer.OutputtedImageRenderer;
+import io.lemonjuice.flan_mai_plugin.image.renderer.ImageRenderer;
 import io.lemonjuice.flan_mai_plugin.image.renderer.completion_table.plan.Plan;
 import io.lemonjuice.flan_mai_plugin.refence.Credits;
 import io.lemonjuice.flan_mai_plugin.refence.FileRefs;
@@ -13,7 +13,7 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class CompletionTableRenderer extends OutputtedImageRenderer {
+public abstract class CompletionTableRenderer extends ImageRenderer {
     private static final Color topColor = new Color(124, 129, 255, 255);
     private static final Color middleColor = new Color(193, 247, 255, 255);
     private static final Color bottomColor = Color.WHITE;
@@ -23,8 +23,7 @@ public abstract class CompletionTableRenderer extends OutputtedImageRenderer {
 
     protected final Plan plan;
 
-    public CompletionTableRenderer(Plan plan, File output, ImageFormat format) {
-        super(output, format);
+    public CompletionTableRenderer(Plan plan) {
         this.plan = plan;
     }
 

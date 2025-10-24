@@ -12,6 +12,7 @@ import io.lemonjuice.flan_mai_plugin.utils.enums.MaiVersion;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -22,11 +23,9 @@ import java.util.stream.Collectors;
 //TODO 完成api方法
 @Log4j2
 public class CompletionTableGenerator {
-    public static final String PLATE_NOT_FOUND = "Plate Not Found";
 
-    public static String generateWithPlates(long qq, String plateName) {
+    public static BufferedImage generateWithPlates(long qq, String plateName) {
         try {
-            File output = new File("./cache/mai_completion_table/" + plateName + "_" + qq + ".png");
 
             List<MaiVersion> versions = MaiVersion.matchVersion(String.valueOf(plateName.charAt(0)));
             Set<Integer> requirementRaw = new HashSet<>();
@@ -36,7 +35,7 @@ public class CompletionTableGenerator {
                 plateName = versions.getFirst().getMappingName() + plateName.substring(1);
 
             if(!new File(FileRefs.PLATE_DIR + plateName + ".png").exists()) {
-                return PLATE_NOT_FOUND;
+                throw new IllegalArgumentException("不存在的牌子");
             }
 
             for (MaiVersion ver : versions) {
@@ -53,22 +52,19 @@ public class CompletionTableGenerator {
 
             List<Integer> requirement = new ArrayList<>(requirementRaw);
 
-            PlateCompletionTableRenderer renderer = new PlateCompletionTableRenderer(plateName, requirement, records, output, ImageFormat.PNG);
-            if(!renderer.renderAndOutput()) {
-                return "";
-            }
+            PlateCompletionTableRenderer renderer = new PlateCompletionTableRenderer(plateName, requirement, records);
 
-            return output.getPath();
+            return renderer.render();
         } catch (Exception e) {
             if(e instanceof NotInitializedException) {
                 throw e;
             }
             log.error("牌子完成表生成失败！", e);
         }
-        return "";
+        return null;
     }
 
-    public static String generateWithLevel(long qq, int level) {
-        return "";
+    public static BufferedImage generateWithLevel(long qq, int level) {
+        return null;
     }
 }

@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Log4j2
-public class SongPlayDataRenderer extends OutputtedImageRenderer {
+public class SongPlayDataRenderer extends ImageRenderer {
     private static final Color textColor = new Color(124, 129, 255, 255);
 
     private final long qq;
@@ -32,8 +32,7 @@ public class SongPlayDataRenderer extends OutputtedImageRenderer {
     private Font siyuan;
     private Font tb;
 
-    public SongPlayDataRenderer(long qq, int songId, File output, ImageFormat format) {
-        super(output, format);
+    public SongPlayDataRenderer(long qq, int songId) {
         this.qq = qq;
         this.songId = songId;
         this.records = RecordUtils.searchRecordBySongId(this.qq, this.songId);

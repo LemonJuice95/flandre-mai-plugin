@@ -15,7 +15,7 @@ public enum MaiVersion {
     PINK("桃", "桃", "maimai PiNK"),
     PINK_PLUS("樱櫻", "櫻", "maimai PiNK PLUS"),
     MURASAKI("紫", "紫", "maimai MURASAKi"),
-    MURASAKI_PLUS("堇菫", "堇", "maimai MURASAKi PLUS"),
+    MURASAKI_PLUS("堇菫", "菫", "maimai MURASAKi PLUS"),
     MILK("白", "白", "maimai MiLK"),
     MILK_PLUS("雪", "雪", "MiLK PLUS"),
     FINALE("輝辉", "輝", "maimai FiNALE"),

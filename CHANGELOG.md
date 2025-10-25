@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.10.1
+ - 修复堇代无法正确映射的问题
+
 ## v0.10.0
  - 图片api现在直接返回BufferedImage
 

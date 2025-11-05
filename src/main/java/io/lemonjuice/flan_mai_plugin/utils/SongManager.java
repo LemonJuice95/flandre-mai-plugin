@@ -94,6 +94,7 @@ public class SongManager {
     }
 
     public static synchronized void init() {
+        log.info("[Flandre Mai Plugin] 正在异步初始化歌曲列表");
         initialized.set(false);
         ID_MAP.clear();
         TITLE_MAP.clear();
@@ -103,6 +104,7 @@ public class SongManager {
         initPlateRequirement();
 
         initialized.set(true);
+        log.info("[Flandre Mai Plugin] 歌曲列表初始化完毕！");
 
         onInitFinish();
     }

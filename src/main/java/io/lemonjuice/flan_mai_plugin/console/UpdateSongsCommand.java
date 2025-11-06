@@ -14,7 +14,7 @@ public class UpdateSongsCommand extends ConsoleCommandRunner {
     @Override
     public void apply() {
         BotConsole.println("更新歌曲列表...");
-        SongManager.init();
+        Thread.startVirtualThread(SongManager::init);
     }
 
     @Override

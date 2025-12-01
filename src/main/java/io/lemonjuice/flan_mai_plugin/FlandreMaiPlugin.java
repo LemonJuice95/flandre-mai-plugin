@@ -12,7 +12,6 @@ import io.lemonjuice.flandre_bot_framework.plugins.BotPlugin;
 public class FlandreMaiPlugin implements BotPlugin {
     @Override
     public void load() {
-        ConfigRefs.init();
         ConsoleCommandInit.COMMANDS.load();
         Thread.startVirtualThread(SongManager::init);
     }
@@ -20,6 +19,15 @@ public class FlandreMaiPlugin implements BotPlugin {
     @Override
     public String getName() {
         return "Flandre MaiMai Plugin";
+    }
+
+    @Override
+    public boolean initConfig() {
+        if(ConfigRefs.check()) {
+            ConfigRefs.init();
+            return true;
+        }
+        return false;
     }
 
     @SubscribeEvent

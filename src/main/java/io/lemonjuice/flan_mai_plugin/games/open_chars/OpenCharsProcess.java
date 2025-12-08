@@ -139,6 +139,9 @@ public class OpenCharsProcess {
         initialized.set(false);
 
         SongManager.getSongs().forEach((song) -> {
+            if(song.info.category.equals("宴会場")) {
+                return;
+            }
             int legalCount = 0;
             for(char ch : song.title.toCharArray()) {
                 if(legalChars.contains(ch)) {

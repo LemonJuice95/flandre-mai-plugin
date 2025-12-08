@@ -161,8 +161,10 @@ public class SongManager {
             int songId = json.getInt("SongID");
             JSONArray songAlias = json.getJSONArray("Alias");
             Song song = ID_MAP.get(songId);
-            for(int j = 0; j < songAlias.length(); j++) {
-                song.alias.add(songAlias.getString(j));
+            if(song != null) {
+                for (int j = 0; j < songAlias.length(); j++) {
+                    song.alias.add(songAlias.getString(j));
+                }
             }
         }
     }

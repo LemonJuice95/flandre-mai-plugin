@@ -104,7 +104,7 @@ public class MaiMaiProberService {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpPost post = new HttpPost(urlWithEndpoint("dev/player/record"));
 
-            post.setHeader(DEVELOPER_TOKEN_HEADER_NAME, ConfigRefs.DIVING_FISH_TOKEN.get());
+            post.addHeader(DEVELOPER_TOKEN_HEADER_NAME, ConfigRefs.DIVING_FISH_TOKEN.get());
 
             JSONObject body = new JSONObject();
             body.put("qq", qq);
@@ -171,6 +171,7 @@ public class MaiMaiProberService {
     public static JSONArray requestPlateProgress(long qq, List<String> versions) {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpPost post = new HttpPost(urlWithEndpoint("query/plate"));
+            post.addHeader(DEVELOPER_TOKEN_HEADER_NAME, ConfigRefs.DIVING_FISH_TOKEN.get());
             JSONObject body = new JSONObject();
             body.put("qq", qq);
             body.put("version", versions);

@@ -14,7 +14,7 @@ java {
 }
 
 group = 'io.github.lemonjuice95'
-version = '0.12.2'
+version = '0.12.3'
 
 jreleaser {
     signing {

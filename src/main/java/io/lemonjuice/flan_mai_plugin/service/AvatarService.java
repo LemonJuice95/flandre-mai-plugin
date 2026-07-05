@@ -7,7 +7,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
-import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -17,7 +16,7 @@ import java.net.URI;
 
 @Log4j2
 public class AvatarService {
-    @Nullable
+
     public static BufferedImage getAvatarByQQ(long qq) {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             URI uri = URI.create(String.format("https://q1.qlogo.cn/g?b=qq&nk=%d&s=100", qq));

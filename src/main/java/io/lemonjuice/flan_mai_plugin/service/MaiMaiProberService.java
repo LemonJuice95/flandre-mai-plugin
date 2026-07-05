@@ -19,7 +19,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import javax.annotation.Nullable;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -29,7 +28,6 @@ public class MaiMaiProberService {
     private static final String DEVELOPER_TOKEN_HEADER_NAME = "Developer-Token";
     private static final String URL = "https://www.diving-fish.com/api/maimaidxprober/";
 
-    @Nullable
     public static JSONObject requestB50(long qq) {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpPost post = new HttpPost(urlWithEndpoint("query/player"));
@@ -51,7 +49,6 @@ public class MaiMaiProberService {
         return null;
     }
 
-    @Nullable
     public static JSONArray requestPlayerRecords(long qq) {
         JSONObject json = requestPlayDataGet(qq);
         if(json != null && json.has("records")) {
@@ -60,7 +57,6 @@ public class MaiMaiProberService {
         return null;
     }
 
-    @Nullable
     public static JSONObject requestPlayDataGet(long qq) {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             String endpoint = String.format("dev/player/records?qq=%d", qq);
@@ -99,7 +95,6 @@ public class MaiMaiProberService {
         return null;
     }
 
-    @Nullable
     public static JSONObject requestPlayDataPost(long qq, int songId) {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpPost post = new HttpPost(urlWithEndpoint("dev/player/record"));
@@ -206,7 +201,6 @@ public class MaiMaiProberService {
         return new JSONObject();
     }
 
-    @Nullable
     public static JSONArray requestSongAlias() {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpGet get = new HttpGet("https://www.yuzuchan.moe/api/maimaidx/maimaidxalias");

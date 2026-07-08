@@ -1,9 +1,11 @@
 package io.lemonjuice.flan_mai_plugin.utils;
 
+import io.lemonjuice.flan_mai_plugin.event.SongInitializedEvent;
 import io.lemonjuice.flan_mai_plugin.exception.NotInitializedException;
 import io.lemonjuice.flan_mai_plugin.games.open_chars.OpenCharsProcess;
 import io.lemonjuice.flan_mai_plugin.model.Song;
 import io.lemonjuice.flan_mai_plugin.service.MaiMaiProberService;
+import io.lemonjuice.flandre_bot_framework.event.BotEventBus;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -111,6 +113,7 @@ public class SongManager {
 
     private static void onInitFinish() {
         OpenCharsProcess.init();
+        BotEventBus.post(new SongInitializedEvent());
     }
 
     private static void initPlateRequirement() {

@@ -32,7 +32,8 @@ public enum MaiVersion {
     FESTIVAL_PLUS("祝", "祝", "maimai でらっくす FESTiVAL"),
     BUDDIES("双", "双", "maimai でらっくす BUDDiES"),
     BUDDIES_PLUS("宴", "宴", "maimai でらっくす BUDDiES"),
-    PRISM("镜", "镜", "maimai でらっくす PRiSM");
+    PRISM("镜鏡", "鏡", "maimai でらっくす PRiSM"),
+    PRISM_PLUS("彩", "彩", "maimai でらっくす PRiSM PLUS");
 
     @Getter
     private final String matchingNames;

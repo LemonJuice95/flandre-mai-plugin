@@ -129,12 +129,12 @@ public class SongManager {
                     if(eachVer.equals("华")) {
                         eachVer = "華";
                     }
-                    if(eachVer.equals("镜")) {
-                        eachVer = "鏡";
-                    }
                     PLATE_REQUIREMENTS.put(eachVer, songIds);
                 }
             } else {
+                if(ver.equals("镜")) {
+                    ver = "鏡";
+                }
                 PLATE_REQUIREMENTS.put(ver, songIds);
             }
         }

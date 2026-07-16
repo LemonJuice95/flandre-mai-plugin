@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.15.0
+ - 实现对PRiSM+的支持
+
 ## v0.14.0
  - 为SongManager初始化完成时添加一个事件
 

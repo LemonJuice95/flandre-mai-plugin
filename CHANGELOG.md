@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.15.3
+ - `OpenCharsProcess`添加一个传入歌曲列表的构造方法
+
 ## v0.15.2
  - 修复镜代牌子需求相关bug
 

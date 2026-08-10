@@ -39,6 +39,13 @@ public class OpenCharsProcess {
     private final Set<Integer> completedIndexes = new HashSet<>();
     private int remaining;
 
+    public OpenCharsProcess(List<Song> songs) {
+        checkInitializedOrThrow();
+
+        this.songs.addAll(songs);
+        this.remaining = songs.size();
+    }
+
     public OpenCharsProcess(int songNum) {
         this(songNum, new ArrayList<>());
     }

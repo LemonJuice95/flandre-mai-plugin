@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.16.0
+ - 大规模修改API以适配水鱼OAuth
+
 ## v0.15.3
  - `OpenCharsProcess`添加一个传入歌曲列表的构造方法
 

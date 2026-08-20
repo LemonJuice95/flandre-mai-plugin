@@ -88,7 +88,7 @@ public class MaiMaiProberApi {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpPost post = new HttpPost(urlWithEndpoint("dev/player/record"));
 
-            post.addHeader(DEVELOPER_TOKEN_HEADER_NAME, ConfigRefs.DIVING_FISH_TOKEN.get());
+//            post.addHeader(DEVELOPER_TOKEN_HEADER_NAME, ConfigRefs.DIVING_FISH_TOKEN.get());
 
             JSONObject body = new JSONObject();
             body.put("qq", qq);

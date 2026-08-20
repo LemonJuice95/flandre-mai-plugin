@@ -107,7 +107,7 @@ public class MaiMaiProberAuthApi {
             requestDataRaw.put("grant_type", "urn:diving-fish:params:oauth:grant-type:on-behalf-of");
             requestDataRaw.put("client_id", ConfigRefs.DIVING_FISH_CLIENT_ID.get());
             requestDataRaw.put("client_secret", ConfigRefs.DIVING_FISH_CLIENT_SECRET.get());
-            requestDataRaw.put("subject", genSubjectRef(qq));
+            requestDataRaw.put("subject", "ref:" + genSubjectRef(qq));
             requestDataRaw.put("scope", ConfigRefs.DIVING_FISH_SCOPES.get());
             String requestData = encodeData(requestDataRaw);
             post.setEntity(new StringEntity(requestData, ContentType.APPLICATION_FORM_URLENCODED));

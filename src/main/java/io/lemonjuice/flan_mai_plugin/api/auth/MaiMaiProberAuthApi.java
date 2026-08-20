@@ -187,7 +187,7 @@ public class MaiMaiProberAuthApi {
     }
 
     public static String genSubjectRef(long qq) {
-        return DigestUtils.sha256(String.format("%d:%s", qq, ConfigRefs.DIVING_FISH_CLIENT_ID.get()));
+        return DigestUtils.sha256(String.format("%s:%d", ConfigRefs.DIVING_FISH_CLIENT_ID.get(), qq));
     }
 
     public static void init() {

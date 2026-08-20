@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.16.5
+ - 部分面向外部的一键生成api将会上抛DivingFishException
+
 ## v0.16.4
  - 修复`DigestUtils`中的sha256
 

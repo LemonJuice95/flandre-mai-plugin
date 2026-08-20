@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.16.6
+ - 修改绑定水鱼时`binding_label`的显示格式
+
 ## v0.16.5
  - 部分面向外部的一键生成api将会上抛DivingFishException
 

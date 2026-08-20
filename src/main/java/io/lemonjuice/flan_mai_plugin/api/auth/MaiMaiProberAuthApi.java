@@ -149,7 +149,7 @@ public class MaiMaiProberAuthApi {
             requestDataRaw.put("client_secret", ConfigRefs.DIVING_FISH_CLIENT_SECRET.get());
             requestDataRaw.put("scope", ConfigRefs.DIVING_FISH_SCOPES.get());
             requestDataRaw.put("subject_ref", genSubjectRef(qq));
-            requestDataRaw.put("binding_label", String.format("%s%s", qqStr.substring(0, 5), "*".repeat(Math.max(0, qqStr.length() - 5))));
+            requestDataRaw.put("binding_label", String.format("QQ %s%s", qqStr.substring(0, 5), "*".repeat(Math.max(0, qqStr.length() - 5))));
             String requestData = encodeData(requestDataRaw);
             post.setEntity(new StringEntity(requestData, ContentType.APPLICATION_FORM_URLENCODED));
 

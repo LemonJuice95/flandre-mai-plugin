@@ -1,7 +1,7 @@
 package io.lemonjuice.flan_mai_plugin.utils;
 
 import io.lemonjuice.flan_mai_plugin.model.PlayRecord;
-import io.lemonjuice.flan_mai_plugin.service.MaiMaiProberService;
+import io.lemonjuice.flan_mai_plugin.api.MaiMaiProberApi;
 import io.lemonjuice.flan_mai_plugin.utils.enums.Rank;
 import io.lemonjuice.flan_mai_plugin.utils.enums.SongLevelLabel;
 import org.json.JSONArray;
@@ -16,7 +16,7 @@ public class RecordUtils {
         List<PlayRecord> result = new ArrayList<>();
 
         try {
-            JSONArray records = MaiMaiProberService.requestPlayerRecords(qq);
+            JSONArray records = MaiMaiProberApi.requestPlayerRecords(qq);
             for (int i = 0; i < records.length(); i++) {
                 JSONObject recordI = records.getJSONObject(i);
                 if(recordI.optInt("song_id", -1) == songId) {

@@ -1,11 +1,9 @@
 package io.lemonjuice.flan_mai_plugin.api;
 
 import io.lemonjuice.flan_mai_plugin.exception.NotInitializedException;
-import io.lemonjuice.flan_mai_plugin.image.ImageFormat;
 import io.lemonjuice.flan_mai_plugin.image.renderer.completion_table.PlateCompletionTableRenderer;
 import io.lemonjuice.flan_mai_plugin.model.PlayRecord;
 import io.lemonjuice.flan_mai_plugin.refence.FileRefs;
-import io.lemonjuice.flan_mai_plugin.service.MaiMaiProberService;
 import io.lemonjuice.flan_mai_plugin.utils.RecordUtils;
 import io.lemonjuice.flan_mai_plugin.utils.SongManager;
 import io.lemonjuice.flan_mai_plugin.utils.enums.MaiVersion;
@@ -18,7 +16,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 //TODO 完成api方法
 @Log4j2
@@ -44,7 +41,7 @@ public class CompletionTableGenerator {
             }
 
             List<String> versionNames = versions.stream().map(MaiVersion::getEnglishName).toList();
-            JSONArray recordsJson = MaiMaiProberService.requestPlateProgress(qq, versionNames);
+            JSONArray recordsJson = MaiMaiProberApi.requestPlateProgress(qq, versionNames);
             List<PlayRecord> records = new ArrayList<>();
             for(int i = 0; i < recordsJson.length(); i++) {
                 records.add(RecordUtils.parsePlateRecord(recordsJson.getJSONObject(i)));

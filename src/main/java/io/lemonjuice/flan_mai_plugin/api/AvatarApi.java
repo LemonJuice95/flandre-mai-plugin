@@ -1,4 +1,4 @@
-package io.lemonjuice.flan_mai_plugin.service;
+package io.lemonjuice.flan_mai_plugin.api;
 
 import lombok.extern.log4j.Log4j2;
 import org.apache.http.HttpResponse;
@@ -15,7 +15,7 @@ import java.io.InputStream;
 import java.net.URI;
 
 @Log4j2
-public class AvatarService {
+public class AvatarApi {
 
     public static BufferedImage getAvatarByQQ(long qq) {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {

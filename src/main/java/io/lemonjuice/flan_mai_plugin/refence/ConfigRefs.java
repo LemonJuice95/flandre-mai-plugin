@@ -13,6 +13,9 @@ public class ConfigRefs {
 
     public static final Supplier<String> BOT_NAME = () -> properties.getProperty("bot.name");
     public static final Supplier<String> DIVING_FISH_TOKEN = () -> properties.getProperty("diving_fish.dev_token");
+    public static final Supplier<String> DIVING_FISH_CLIENT_ID = () -> properties.getProperty("diving_fish.client_id");
+    public static final Supplier<String> DIVING_FISH_CLIENT_SECRET = () -> properties.getProperty("diving_fish.client_secret");
+    public static final Supplier<String> DIVING_FISH_SCOPES = () -> properties.getProperty("diving_fish.scopes");
 
     public static synchronized boolean check() {
         boolean result = true;

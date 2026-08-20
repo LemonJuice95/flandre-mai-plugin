@@ -4,7 +4,7 @@ import io.lemonjuice.flan_mai_plugin.event.SongInitializedEvent;
 import io.lemonjuice.flan_mai_plugin.exception.NotInitializedException;
 import io.lemonjuice.flan_mai_plugin.games.open_chars.OpenCharsProcess;
 import io.lemonjuice.flan_mai_plugin.model.Song;
-import io.lemonjuice.flan_mai_plugin.service.MaiMaiProberService;
+import io.lemonjuice.flan_mai_plugin.api.MaiMaiProberApi;
 import io.lemonjuice.flandre_bot_framework.event.BotEventBus;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
@@ -117,7 +117,7 @@ public class SongManager {
     }
 
     private static void initPlateRequirement() {
-        JSONObject requirementJson = MaiMaiProberService.requestPlateRequirement();
+        JSONObject requirementJson = MaiMaiProberApi.requestPlateRequirement();
         for(String ver : requirementJson.keySet()) {
             JSONArray jsonArray = requirementJson.getJSONArray(ver);
             List<Integer> songIds = new ArrayList<>();
@@ -141,8 +141,8 @@ public class SongManager {
     }
 
     private static void initMusicData() {
-        JSONArray songsJson = MaiMaiProberService.requestSongListRaw();
-        JSONObject chartStats = MaiMaiProberService.requestChartStats();
+        JSONArray songsJson = MaiMaiProberApi.requestSongListRaw();
+        JSONObject chartStats = MaiMaiProberApi.requestChartStats();
         for(int i = 0; i < songsJson.length(); i++) {
             JSONObject songJson = songsJson.getJSONObject(i);
             Song song = SongUtils.parseSong(songJson);
@@ -161,7 +161,7 @@ public class SongManager {
             TITLE_MAP.get(song.title).add(song);
         }
 
-        JSONArray aliasJson = MaiMaiProberService.requestSongAlias();
+        JSONArray aliasJson = MaiMaiProberApi.requestSongAlias();
         for(int i = 0; i < aliasJson.length(); i++) {
             JSONObject json = aliasJson.getJSONObject(i);
             int songId = json.getInt("SongID");

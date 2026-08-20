@@ -1,10 +1,11 @@
-package io.lemonjuice.flan_mai_plugin.service;
+package io.lemonjuice.flan_mai_plugin.api;
 
+import io.lemonjuice.flan_mai_plugin.api.auth.MaiMaiProberAuthApi;
+import io.lemonjuice.flan_mai_plugin.exception.DivingFishException;
 import io.lemonjuice.flan_mai_plugin.exception.InvalidTokenException;
 import io.lemonjuice.flan_mai_plugin.exception.TokenTooMuchUsageException;
 import io.lemonjuice.flan_mai_plugin.refence.CacheFileRefs;
 import io.lemonjuice.flan_mai_plugin.refence.ConfigRefs;
-import io.lemonjuice.flan_mai_plugin.utils.enums.MaiVersion;
 import lombok.extern.log4j.Log4j2;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -24,7 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Log4j2
-public class MaiMaiProberService {
+public class MaiMaiProberApi {
     private static final String DEVELOPER_TOKEN_HEADER_NAME = "Developer-Token";
     private static final String URL = "https://www.diving-fish.com/api/maimaidxprober/";
 
@@ -59,33 +60,20 @@ public class MaiMaiProberService {
 
     public static JSONObject requestPlayDataGet(long qq) {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            String endpoint = String.format("dev/player/records?qq=%d", qq);
-            HttpGet get = new HttpGet(urlWithEndpoint(endpoint));
-            get.addHeader(DEVELOPER_TOKEN_HEADER_NAME, ConfigRefs.DIVING_FISH_TOKEN.get());
+            HttpGet get = new HttpGet(urlWithEndpoint("player/records"));
+            get.addHeader("Authorization", String.format("Bearer %s", MaiMaiProberAuthApi.getToken(qq)));
             HttpResponse response = httpClient.execute(get);
             String responseStr = EntityUtils.toString(response.getEntity());
             JSONObject json;
             try {
                 json = new JSONObject(responseStr);
             } catch (JSONException e) {
-                json = null;
+                json = new JSONObject();
             }
 
-            if(response.getStatusLine().getStatusCode() == 400) {
-                if (json != null && json.has("msg")) {
-                    if (json.getString("msg").equals("请先联系水鱼申请开发者token") ||
-                            json.getString("msg").equals("开发者token有误")) {
-                        throw new InvalidTokenException("token无效");
-                    }
-                    //XXX 不太确定
-                    if (json.getString("msg").equals("开发者token被禁用")) {
-                        throw new TokenTooMuchUsageException("token使用次数到达上限");
-                    }
-                }
-                return null;
-            } else if(response.getStatusLine().getStatusCode() != 200) {
+            if(response.getStatusLine().getStatusCode() != 200) {
                 log.error("游玩记录拉取失败！qq:{}", qq);
-                return null;
+                throw new DivingFishException(json.optString("message", "HTTP ERROR " + response.getStatusLine().getStatusCode()));
             }
 
             return json;
@@ -95,6 +83,7 @@ public class MaiMaiProberService {
         return null;
     }
 
+    @Deprecated
     public static JSONObject requestPlayDataPost(long qq, int songId) {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpPost post = new HttpPost(urlWithEndpoint("dev/player/record"));
@@ -165,8 +154,8 @@ public class MaiMaiProberService {
 
     public static JSONArray requestPlateProgress(long qq, List<String> versions) {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            HttpPost post = new HttpPost(urlWithEndpoint("query/plate"));
-            post.addHeader(DEVELOPER_TOKEN_HEADER_NAME, ConfigRefs.DIVING_FISH_TOKEN.get());
+            HttpPost post = new HttpPost(urlWithEndpoint("player/plate"));
+            post.addHeader("Authorization", String.format("Bearer %s", MaiMaiProberAuthApi.getToken(qq)));
             JSONObject body = new JSONObject();
             body.put("qq", qq);
             body.put("version", versions);

@@ -1,10 +1,9 @@
 package io.lemonjuice.flan_mai_plugin.image.renderer;
 
-import io.lemonjuice.flan_mai_plugin.image.ImageFormat;
 import io.lemonjuice.flan_mai_plugin.model.PlayRecord;
 import io.lemonjuice.flan_mai_plugin.refence.Credits;
 import io.lemonjuice.flan_mai_plugin.refence.FileRefs;
-import io.lemonjuice.flan_mai_plugin.service.AvatarService;
+import io.lemonjuice.flan_mai_plugin.api.AvatarApi;
 import io.lemonjuice.flan_mai_plugin.utils.RecordUtils;
 import io.lemonjuice.flan_mai_plugin.utils.SongManager;
 import io.lemonjuice.flan_mai_plugin.utils.DxScoreUtils;
@@ -72,7 +71,7 @@ public class B50ImageRenderer extends ImageRenderer {
             //头像
             String avatarPath = FileRefs.DEFAULT_AVATAR;
             BufferedImage avatar = ImageIO.read(new File(avatarPath));
-            BufferedImage qqAvatar = AvatarService.getAvatarByQQ(this.qq);
+            BufferedImage qqAvatar = AvatarApi.getAvatarByQQ(this.qq);
             g.drawImage(avatar, 305, 65, 120, 120, null);
             if(qqAvatar != null) {
                 g.drawImage(qqAvatar, 308, 68, 114, 114, null);

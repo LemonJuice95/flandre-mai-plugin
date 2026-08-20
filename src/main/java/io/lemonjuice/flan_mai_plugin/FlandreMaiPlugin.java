@@ -1,5 +1,6 @@
 package io.lemonjuice.flan_mai_plugin;
 
+import io.lemonjuice.flan_mai_plugin.api.auth.MaiMaiProberAuthApi;
 import io.lemonjuice.flan_mai_plugin.console.ConsoleCommandInit;
 import io.lemonjuice.flan_mai_plugin.refence.ConfigRefs;
 import io.lemonjuice.flan_mai_plugin.utils.SongManager;
@@ -13,6 +14,7 @@ public class FlandreMaiPlugin implements BotPlugin {
     @Override
     public void load() {
         ConsoleCommandInit.COMMANDS.load();
+        Thread.startVirtualThread(MaiMaiProberAuthApi::init);
         Thread.startVirtualThread(SongManager::init);
     }
 

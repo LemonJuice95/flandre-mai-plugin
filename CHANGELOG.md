@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.16.1
+ - `MaiMaiProberAuthApi`添加自动清理过期缓存，同时优化`getToken`防止虚拟线程钉死
+
 ## v0.16.0
  - 大规模修改API以适配水鱼OAuth
 

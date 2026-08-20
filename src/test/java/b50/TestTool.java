@@ -4,6 +4,7 @@ import io.lemonjuice.flan_mai_plugin.api.CompletionTableGenerator;
 import io.lemonjuice.flan_mai_plugin.api.DivingFishB50Generator;
 import io.lemonjuice.flan_mai_plugin.api.SongInfoGenerator;
 import io.lemonjuice.flan_mai_plugin.api.SongPlayDataGenerator;
+import io.lemonjuice.flan_mai_plugin.api.auth.MaiMaiProberAuthApi;
 import io.lemonjuice.flan_mai_plugin.model.Song;
 import io.lemonjuice.flan_mai_plugin.refence.ConfigRefs;
 import io.lemonjuice.flan_mai_plugin.utils.SongManager;
@@ -48,5 +49,10 @@ public class TestTool {
     public void testLegalSong() {
         SongManager.init();
         List<Song> songs = SongManager.searchSong("超天酱");
+    }
+
+    @Test
+    public void testGetToken() {
+        MaiMaiProberAuthApi.getToken(1582017385L);
     }
 }

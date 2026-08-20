@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.16.3
+ - 修复`MaiMaiProberAuthApi`中subject的写法
+
 ## v0.16.2
  - 修复`MaiMaiProberAuthApi`中`getNewToken`方法中subject的写法
 

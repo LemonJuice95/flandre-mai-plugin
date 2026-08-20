@@ -21,7 +21,7 @@ public class DigestUtils {
     public static String toHexStr(byte[] input) {
         StringBuilder result = new StringBuilder();
         for(byte b : input) {
-            String hex = Integer.toHexString(b);
+            String hex = Integer.toHexString(b & 0xff);
             if(hex.length() == 1) {
                 result.append("0");
             }

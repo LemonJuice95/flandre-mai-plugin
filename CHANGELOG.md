@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.16.2
+ - 修复`MaiMaiProberAuthApi`中`getNewToken`方法中subject的写法
+
 ## v0.16.1
  - `MaiMaiProberAuthApi`添加自动清理过期缓存，同时优化`getToken`防止虚拟线程钉死
 

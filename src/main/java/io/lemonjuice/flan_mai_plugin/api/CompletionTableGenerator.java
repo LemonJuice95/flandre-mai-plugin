@@ -1,5 +1,6 @@
 package io.lemonjuice.flan_mai_plugin.api;
 
+import io.lemonjuice.flan_mai_plugin.exception.DivingFishException;
 import io.lemonjuice.flan_mai_plugin.exception.NotInitializedException;
 import io.lemonjuice.flan_mai_plugin.image.renderer.completion_table.PlateCompletionTableRenderer;
 import io.lemonjuice.flan_mai_plugin.model.PlayRecord;
@@ -53,7 +54,7 @@ public class CompletionTableGenerator {
 
             return renderer.render();
         } catch (Exception e) {
-            if(e instanceof NotInitializedException) {
+            if(e instanceof NotInitializedException || e instanceof DivingFishException) {
                 throw e;
             }
             log.error("牌子完成表生成失败！", e);

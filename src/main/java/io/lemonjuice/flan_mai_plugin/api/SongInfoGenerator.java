@@ -1,5 +1,6 @@
 package io.lemonjuice.flan_mai_plugin.api;
 
+import io.lemonjuice.flan_mai_plugin.exception.DivingFishException;
 import io.lemonjuice.flan_mai_plugin.exception.NotInitializedException;
 import io.lemonjuice.flan_mai_plugin.image.ImageFormat;
 import io.lemonjuice.flan_mai_plugin.image.renderer.SongInfoRenderer;
@@ -35,7 +36,7 @@ public class SongInfoGenerator {
             }
             return result;
         } catch (Exception e) {
-            if(e instanceof NotInitializedException) {
+            if(e instanceof NotInitializedException || e instanceof DivingFishException) {
                 throw e;
             }
             log.error("生成歌曲信息失败！", e);

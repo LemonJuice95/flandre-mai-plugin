@@ -1,5 +1,6 @@
 package io.lemonjuice.flan_mai_plugin.api;
 
+import io.lemonjuice.flan_mai_plugin.exception.DivingFishException;
 import io.lemonjuice.flan_mai_plugin.exception.NotInitializedException;
 import io.lemonjuice.flan_mai_plugin.image.ImageFormat;
 import io.lemonjuice.flan_mai_plugin.image.renderer.SongPlayDataRenderer;
@@ -15,7 +16,7 @@ public class SongPlayDataGenerator {
             SongPlayDataRenderer renderer = new SongPlayDataRenderer(qq, songId);
             return renderer.render();
         } catch (Exception e) {
-            if(e instanceof NotInitializedException) {
+            if(e instanceof NotInitializedException || e instanceof DivingFishException) {
                 throw e;
             }
             log.error("生成游玩记录失败！", e);

@@ -12,9 +12,17 @@ public class ConfigRefs {
     private static final File cfgFile = new File("./config/mai_plugin.properties");
 
     public static final Supplier<String> BOT_NAME = () -> properties.getProperty("bot.name");
-    public static final Supplier<String> DIVING_FISH_CLIENT_ID = () -> properties.getProperty("diving_fish.client_id");
-    public static final Supplier<String> DIVING_FISH_CLIENT_SECRET = () -> properties.getProperty("diving_fish.client_secret");
-    public static final Supplier<String> DIVING_FISH_SCOPES = () -> properties.getProperty("diving_fish.scopes");
+    public static final Supplier<String> DIVING_FISH_CLIENT_ID = () -> properties.getProperty("diving_fish.auth.client_id");
+    public static final Supplier<String> DIVING_FISH_CLIENT_SECRET = () -> properties.getProperty("diving_fish.auth.client_secret");
+    public static final Supplier<String> DIVING_FISH_SCOPES = () -> properties.getProperty("diving_fish.auth.scopes");
+    public static final Supplier<Integer> DIVING_FISH_TOKEN_CLEAN_RATE = () -> {
+        try {
+            return Integer.parseInt(properties.getProperty("diving_fish.auth.cached_token_clean_rate"));
+        } catch (NumberFormatException e) {
+            log.warn("设置项diving_fish.auth.cached_token_clean_rate无效，将使用默认值300");
+            return 300000;
+        }
+    };
 
     public static synchronized boolean check() {
         boolean result = true;

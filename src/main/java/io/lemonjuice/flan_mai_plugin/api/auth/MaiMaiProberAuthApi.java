@@ -5,6 +5,7 @@ import io.lemonjuice.flan_mai_plugin.refence.ConfigRefs;
 import io.lemonjuice.flan_mai_plugin.utils.DigestUtils;
 import lombok.extern.log4j.Log4j2;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -17,28 +18,90 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Log4j2
 public class MaiMaiProberAuthApi {
-    private static final ConcurrentHashMap<Long, CachedDivingFishToken> TOKEN_CACHE = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Long, CompletableFuture<CachedDivingFishToken>> TOKEN_CACHE = new ConcurrentHashMap<>();
+    private static final Thread CACHE_CLEANER_THREAD = new Thread(MaiMaiProberAuthApi::cleanCache, "Diving Fish Token Cleaner");
+
+    @SuppressWarnings("BusyWait")
+    private static void cleanCache() {
+        while(true) {
+            try {
+                Thread.sleep(ConfigRefs.DIVING_FISH_TOKEN_CLEAN_RATE.get() * 1000L);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
+            long currentTime = System.currentTimeMillis();
+            TOKEN_CACHE.entrySet().removeIf(entry -> {
+                CompletableFuture<CachedDivingFishToken> future = entry.getValue();
+                if (future.isDone()) {
+                    try {
+                        CachedDivingFishToken token = future.getNow(null);
+                        if (token != null) {
+                            return token.getValidUntilMillis() <= currentTime;
+                        }
+                    } catch (CompletionException e) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+        }
+    }
 
     public static String getToken(long qq) throws DivingFishException {
-        return TOKEN_CACHE.compute(qq, (k, v) -> {
-            if (v == null) {
-                return getNewToken(qq);
+        CompletableFuture<CachedDivingFishToken> future = TOKEN_CACHE.compute(qq, (k, v) -> {
+            if(v != null) {
+                if(v.isDone()) {
+                    try {
+                        CachedDivingFishToken token = v.getNow(null);
+                        if(token != null && token.getValidUntilMillis() > System.currentTimeMillis()) {
+                            return v;
+                        }
+                    } catch (CompletionException ignored) {
+                    }
+                } else {
+                    return v;
+                }
             }
-            long currentTimeMillis = System.currentTimeMillis();
-            if (v.getValidUntilMillis() <= currentTimeMillis) {
-                return getNewToken(qq);
+
+            CompletableFuture<CachedDivingFishToken> newFuture = new CompletableFuture<>();
+            Thread.startVirtualThread(() -> {
+                try {
+                    CachedDivingFishToken token = getNewToken(qq);
+                    newFuture.complete(token);
+                } catch (Throwable throwable) {
+                    newFuture.completeExceptionally(throwable);
+                }
+            });
+            return newFuture;
+        });
+
+        try {
+            CachedDivingFishToken token = future.join();
+            return token.getToken();
+        } catch (CompletionException e) {
+            Throwable throwable = e.getCause();
+            if(throwable instanceof DivingFishException de) {
+                throw de;
             }
-            return v;
-        }).getToken();
+            throw new DivingFishException();
+        }
     }
 
     private static CachedDivingFishToken getNewToken(long qq) {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             HttpPost post = new HttpPost(AuthEndPoint.TOKEN.getValue());
+            RequestConfig config = RequestConfig.custom()
+                    .setConnectTimeout(10000)
+                    .setSocketTimeout(10000)
+                    .build();
+            post.setConfig(config);
 
             JSONObject requestDataRaw = new JSONObject();
             requestDataRaw.put("grant_type", "urn:diving-fish:params:oauth:grant-type:on-behalf-of");
@@ -129,5 +192,6 @@ public class MaiMaiProberAuthApi {
 
     public static void init() {
         AuthEndPoint.init();
+        CACHE_CLEANER_THREAD.start();
     }
 }

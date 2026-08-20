@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.16.4
+ - 修复`DigestUtils`中的sha256
+
 ## v0.16.3
  - 修复`MaiMaiProberAuthApi`中subject的写法
 

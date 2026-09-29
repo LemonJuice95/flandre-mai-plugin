@@ -14,7 +14,7 @@ java {
 }
 
 group = 'io.github.lemonjuice95'
-version = '0.16.6'
+version = '0.17.0'
 
 jreleaser {
     signing {
@@ -87,6 +87,7 @@ publishing {
     }
 }
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
@@ -102,7 +103,8 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.46'
     annotationProcessor 'org.projectlombok:lombok:1.18.46'
 
-    compileOnly 'io.github.lemonjuice95:flandre-bot-framework:0.25.0'
+    compileOnly 'io.github.lemonjuice95:flandre-bot-framework:0.29.0'
+    annotationProcessor 'io.github.lemonjuice95:flandre-bot-framework:0.29.0:processor'
 
     //Http Request
     implementation 'org.apache.httpcomponents:httpclient:4.5.14'
